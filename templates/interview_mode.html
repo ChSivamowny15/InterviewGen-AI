@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Interview Mode | InterviewGen AI</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f4f2ff, #eef5ff);
+            color: #25234a;
+            padding: 35px 20px;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 38px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .details {
+            background: white;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 5px 20px rgba(30, 30, 80, 0.06);
+        }
+
+        .details span {
+            color: #4034a6;
+            font-weight: bold;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 25px;
+        }
+
+        .option {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid transparent;
+            box-shadow: 0 8px 25px rgba(30, 30, 80, 0.08);
+            display: flex;
+            flex-direction: column;
+            transition: 0.2s ease;
+        }
+
+        .option:hover {
+            transform: translateY(-5px);
+            border-color: #7164e8;
+        }
+
+        .option-icon {
+            font-size: 48px;
+            margin-bottom: 18px;
+        }
+
+        .option h2 {
+            font-size: 23px;
+            margin-bottom: 12px;
+        }
+
+        .option p {
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .features {
+            list-style: none;
+            margin-bottom: 25px;
+            flex: 1;
+        }
+
+        .features li {
+            margin: 12px 0;
+            color: #334155;
+        }
+
+        .choose-btn {
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            background: #5145cd;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .choose-btn:hover {
+            background: #392eaa;
+        }
+
+        .text-option .choose-btn {
+            background: #087f8c;
+        }
+
+        .text-option .choose-btn:hover {
+            background: #05636d;
+        }
+
+        .note {
+            text-align: center;
+            color: #64748b;
+            margin-top: 28px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+
+            .option {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Choose Your Interview Mode</h1>
+        <p>
+            You have selected the Advanced interview level.
+            Choose how you want to attend your interview.
+        </p>
+    </div>
+
+    <div class="details">
+        <div>Role: <span>{{ role }}</span></div>
+        <div>Interview: <span>{{ interview_type }}</span></div>
+        <div>Difficulty: <span>{{ difficulty }}</span></div>
+        <div>Questions: <span>{{ questions|length }}</span></div>
+    </div>
+
+    <div class="options">
+
+        <!-- LIVE VIDEO INTERVIEW -->
+
+        <div class="option">
+
+            <div class="option-icon">🎥</div>
+
+            <h2>Live Video Interview</h2>
+
+            <p>
+                Attend a realistic interview using your webcam
+                and microphone. Speak your answers naturally.
+            </p>
+
+            <ul class="features">
+                <li>✓ Webcam enabled</li>
+                <li>✓ Microphone and spoken answers</li>
+                <li>✓ Speech-to-text conversion</li>
+                <li>✓ Face detection</li>
+                <li>✓ AI interviewer questions</li>
+            </ul>
+
+            <form action="/begin-interview" method="POST">
+
+                <input type="hidden" name="role" value="{{ role }}">
+                <input type="hidden" name="interview_type" value="{{ interview_type }}">
+                <input type="hidden" name="difficulty" value="{{ difficulty }}">
+                <input type="hidden" name="interviewer" value="{{ interviewer }}">
+                <input type="hidden" name="interview_mode" value="video">
+                <input type="hidden" name="questions_json" value="{{ questions|tojson|forceescape }}">
+
+                <button type="submit" class="choose-btn">
+                    Start Live Video Interview
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- TEXT-BASED INTERVIEW -->
+
+        <div class="option text-option">
+
+            <div class="option-icon">⌨️</div>
+
+            <h2>Text-Based Interview</h2>
+
+            <p>
+                Answer every interview question by typing.
+                Listen to the AI interviewer read the questions aloud.
+            </p>
+
+            <ul class="features">
+                <li>✓ No webcam required</li>
+                <li>✓ No microphone required</li>
+                <li>✓ Type your answers</li>
+                <li>✓ AI interviewer voice reads questions</li>
+                <li>✓ Same questions and evaluation</li>
+            </ul>
+
+            <form action="/begin-interview" method="POST">
+
+                <input type="hidden" name="role" value="{{ role }}">
+                <input type="hidden" name="interview_type" value="{{ interview_type }}">
+                <input type="hidden" name="difficulty" value="{{ difficulty }}">
+                <input type="hidden" name="interviewer" value="{{ interviewer }}">
+                <input type="hidden" name="interview_mode" value="text">
+                <input type="hidden" name="questions_json" value="{{ questions|tojson|forceescape }}">
+
+                <button type="submit" class="choose-btn">
+                    Start Text-Based Interview
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="note">
+        Your selected interview mode will determine which devices are used.
+        Your questions, timer, evaluation and final report remain the same.
+    </div>
+
+</div>
+
+</body>
+</html>

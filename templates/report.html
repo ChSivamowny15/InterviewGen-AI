@@ -1,0 +1,800 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>InterviewGen AI | Performance Report</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f5fb;
+            color: #252442;
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #4034a6;
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #777;
+            font-size: 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            color: #4034a6;
+            font-size: 21px;
+            margin-bottom: 22px;
+        }
+
+        /* INTERVIEW SUMMARY */
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit,
+                minmax(170px, 1fr)
+            );
+            gap: 15px;
+        }
+
+        .metric {
+            background: #f0eeff;
+            padding: 22px 15px;
+            border-radius: 12px;
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+
+        .metric h2 {
+            color: #4034a6;
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .metric p {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .detail {
+            margin-top: 14px;
+            line-height: 1.7;
+            color: #555;
+            overflow-wrap: anywhere;
+        }
+
+        .detail strong {
+            color: #29264e;
+        }
+
+        /* PERFORMANCE ANALYSIS */
+
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit,
+                minmax(220px, 1fr)
+            );
+            gap: 20px;
+        }
+
+        .performance-item {
+            background: #fafaff;
+            border: 1px solid #ecebfa;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .performance-heading {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .performance-heading strong {
+            color: #29264e;
+        }
+
+        .performance-heading span {
+            color: #4034a6;
+            font-weight: bold;
+        }
+
+        .progress {
+            height: 9px;
+            background: #e8e7f2;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            background: #5145cd;
+            border-radius: 20px;
+            transition: width 0.8s ease;
+        }
+
+        /* QUESTION RESULTS */
+
+        .question {
+            border: 1px solid #e5e5ef;
+            border-radius: 13px;
+            padding: 22px;
+            margin-bottom: 20px;
+            background: #fff;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .question-header h3 {
+            color: #30277e;
+            font-size: 18px;
+        }
+
+        .score {
+            display: inline-block;
+            background: #e8f7ed;
+            color: #188348;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .question-text {
+            line-height: 1.7;
+            color: #29264e;
+            margin-bottom: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .answer-box {
+            background: #f8f8fc;
+            border-left: 4px solid #5145cd;
+            padding: 15px;
+            border-radius: 7px;
+            line-height: 1.7;
+            color: #555;
+            overflow-wrap: anywhere;
+        }
+
+        .answer-box p {
+            margin-top: 7px;
+            white-space: pre-wrap;
+        }
+
+        .feedback-grid {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit,
+                minmax(200px, 1fr)
+            );
+            gap: 13px;
+            margin-top: 18px;
+        }
+
+        .feedback-box {
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f8fc;
+            line-height: 1.7;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .feedback-box h4 {
+            margin-bottom: 8px;
+            color: #4034a6;
+        }
+
+        .feedback-box p {
+            color: #555;
+            white-space: pre-wrap;
+        }
+
+        .meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #777;
+        }
+
+        /* OVERALL PERFORMANCE */
+
+        .summary-message {
+            background: #f0eeff;
+            padding: 20px;
+            border-radius: 12px;
+            line-height: 1.8;
+            color: #4034a6;
+        }
+
+        .summary-message h3 {
+            margin-bottom: 8px;
+        }
+
+        .note {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.7;
+            margin-top: 18px;
+        }
+
+        /* BUTTONS */
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        button,
+        .home-btn {
+            border: none;
+            background: #4034a6;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        button:hover,
+        .home-btn:hover {
+            background: #30277e;
+        }
+
+        .print-btn {
+            background: #555;
+        }
+
+        .print-btn:hover {
+            background: #333;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 18px 10px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .header h1 {
+                font-size: 27px;
+            }
+
+            .question {
+                padding: 16px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .actions {
+                display: none;
+            }
+
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+            }
+
+            .question {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+        <h1>InterviewGen AI</h1>
+        <p>AI-Based Mock Interview & Performance Report</p>
+    </div>
+
+
+    <!-- INTERVIEW SUMMARY -->
+
+    <div class="card">
+
+        <h2 class="section-title">Interview Summary</h2>
+
+        <div class="summary">
+
+            <div class="metric">
+                <h2>{{ average_score | round(1) }}%</h2>
+                <p>Overall Score</p>
+            </div>
+
+            <div class="metric">
+                <h2>{{ total_questions }}</h2>
+                <p>Total Questions</p>
+            </div>
+
+            <div class="metric">
+                <h2>{{ role }}</h2>
+                <p>Job Role</p>
+            </div>
+
+            <div class="metric">
+                <h2>{{ difficulty }}</h2>
+                <p>Difficulty</p>
+            </div>
+
+        </div>
+
+        <p class="detail">
+            <strong>Interview Type:</strong>
+            {{ interview_type }}
+        </p>
+
+        <p class="detail">
+            <strong>AI Evaluation Model:</strong>
+            {{ model_name }}
+        </p>
+
+        {% if evaluation_error %}
+            <p class="detail">
+                <strong>Notice:</strong>
+                AI evaluation encountered an error.
+                Some scores may be unavailable.
+            </p>
+        {% endif %}
+
+    </div>
+
+
+    <!-- DETAILED PERFORMANCE ANALYSIS -->
+
+    <div class="card">
+
+        <h2 class="section-title">
+            Detailed Performance Analysis
+        </h2>
+
+        {% set ns = namespace(
+            relevance=0,
+            technical=0,
+            completeness=0,
+            communication=0,
+            count=0
+        ) %}
+
+        {% for item in results %}
+
+            {% set ns.relevance = ns.relevance +
+                (item.relevance | default(0) | float) %}
+
+            {% set ns.technical = ns.technical +
+                (item.technical_accuracy | default(0) | float) %}
+
+            {% set ns.completeness = ns.completeness +
+                (item.completeness | default(0) | float) %}
+
+            {% set ns.communication = ns.communication +
+                (item.communication | default(0) | float) %}
+
+            {% set ns.count = ns.count + 1 %}
+
+        {% endfor %}
+
+        {% if ns.count > 0 %}
+
+            {% set relevance_score =
+                (ns.relevance / ns.count) | round(1) %}
+
+            {% set technical_score =
+                (ns.technical / ns.count) | round(1) %}
+
+            {% set completeness_score =
+                (ns.completeness / ns.count) | round(1) %}
+
+            {% set communication_score =
+                (ns.communication / ns.count) | round(1) %}
+
+        {% else %}
+
+            {% set relevance_score = 0 %}
+            {% set technical_score = 0 %}
+            {% set completeness_score = 0 %}
+            {% set communication_score = 0 %}
+
+        {% endif %}
+
+
+        <div class="performance-grid">
+
+            <!-- RELEVANCE -->
+
+            <div class="performance-item">
+
+                <div class="performance-heading">
+                    <strong>Relevance</strong>
+                    <span>{{ relevance_score }}/100</span>
+                </div>
+
+                <div class="progress">
+                    <div
+                        class="progress-fill"
+                        data-score="{{ relevance_score }}">
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- TECHNICAL ACCURACY -->
+
+            <div class="performance-item">
+
+                <div class="performance-heading">
+                    <strong>Technical Accuracy</strong>
+                    <span>{{ technical_score }}/100</span>
+                </div>
+
+                <div class="progress">
+                    <div
+                        class="progress-fill"
+                        data-score="{{ technical_score }}">
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- COMPLETENESS -->
+
+            <div class="performance-item">
+
+                <div class="performance-heading">
+                    <strong>Completeness</strong>
+                    <span>{{ completeness_score }}/100</span>
+                </div>
+
+                <div class="progress">
+                    <div
+                        class="progress-fill"
+                        data-score="{{ completeness_score }}">
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- COMMUNICATION -->
+
+            <div class="performance-item">
+
+                <div class="performance-heading">
+                    <strong>Communication</strong>
+                    <span>{{ communication_score }}/100</span>
+                </div>
+
+                <div class="progress">
+                    <div
+                        class="progress-fill"
+                        data-score="{{ communication_score }}">
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <p class="note">
+            These criterion scores are averages across the
+            interview questions.
+        </p>
+
+    </div>
+
+
+    <!-- QUESTION-WISE EVALUATION -->
+
+    <div class="card">
+
+        <h2 class="section-title">
+            Question-wise Evaluation
+        </h2>
+
+        {% for item in results %}
+
+            <div class="question">
+
+                <div class="question-header">
+
+                    <h3>Question {{ loop.index }}</h3>
+
+                    <span class="score">
+                        {{ item.score }}/100
+                    </span>
+
+                </div>
+
+
+                <div class="question-text">
+                    <strong>{{ item.question }}</strong>
+                </div>
+
+
+                <!-- CANDIDATE ANSWER -->
+
+                <div class="answer-box">
+
+                    <strong>Your Answer:</strong>
+
+                    <p>
+                        {{ item.answer or "No answer provided." }}
+                    </p>
+
+                </div>
+
+
+                <!-- ANSWER DETAILS -->
+
+                <div class="meta">
+
+                    <span>
+                        <strong>Word Count:</strong>
+                        {{ item.word_count | default(0) }}
+                    </span>
+
+                    <span>
+                        <strong>Time Taken:</strong>
+                        {{ item.time_taken | default(0) }}
+                        seconds
+                    </span>
+
+                </div>
+
+
+                <!-- INDIVIDUAL CRITERIA -->
+
+                <div class="feedback-grid">
+
+                    <div class="feedback-box">
+                        <h4>Relevance</h4>
+                        <p>
+                            {{ item.relevance | default(0) }}/100
+                        </p>
+                    </div>
+
+                    <div class="feedback-box">
+                        <h4>Technical Accuracy</h4>
+                        <p>
+                            {{ item.technical_accuracy | default(0) }}/100
+                        </p>
+                    </div>
+
+                    <div class="feedback-box">
+                        <h4>Completeness</h4>
+                        <p>
+                            {{ item.completeness | default(0) }}/100
+                        </p>
+                    </div>
+
+                    <div class="feedback-box">
+                        <h4>Communication</h4>
+                        <p>
+                            {{ item.communication | default(0) }}/100
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- AI FEEDBACK -->
+
+                <div class="feedback-grid">
+
+                    <div class="feedback-box">
+                        <h4>Strengths</h4>
+                        <p>{{ item.strengths }}</p>
+                    </div>
+
+                    <div class="feedback-box">
+                        <h4>Areas to Improve</h4>
+                        <p>{{ item.weaknesses }}</p>
+                    </div>
+
+                    <div class="feedback-box">
+                        <h4>AI Suggestions</h4>
+                        <p>{{ item.suggestions }}</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% else %}
+
+            <p>No interview results are available.</p>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- OVERALL PERFORMANCE SUMMARY -->
+
+    <div class="card">
+
+        <h2 class="section-title">
+            Overall Performance Summary
+        </h2>
+
+        <div class="summary-message">
+
+            {% if average_score >= 80 %}
+
+                <h3>Excellent Performance!</h3>
+
+                <p>
+                    You demonstrated strong interview performance.
+                    Continue practising to maintain your progress
+                    and improve your technical and communication skills.
+                </p>
+
+            {% elif average_score >= 60 %}
+
+                <h3>Good Performance!</h3>
+
+                <p>
+                    You have a good understanding of several concepts.
+                    Focus on improving your weaker areas and providing
+                    more detailed explanations.
+                </p>
+
+            {% elif average_score >= 40 %}
+
+                <h3>Developing Performance</h3>
+
+                <p>
+                    You are making progress. Practise fundamental
+                    concepts, improve answer structure and include
+                    relevant examples.
+                </p>
+
+            {% else %}
+
+                <h3>Needs More Practice</h3>
+
+                <p>
+                    Continue practising regularly. Review the feedback
+                    for each question and strengthen your fundamentals.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <p class="note">
+            This AI-generated report is intended for interview
+            practice and learning. Scores are estimates and are
+            not a guarantee of job readiness.
+        </p>
+
+    </div>
+
+
+    <!-- ACTION BUTTONS -->
+
+    <div class="actions">
+
+        <form action="/download-report" method="POST">
+
+            <input
+                type="hidden"
+                name="report_data"
+                value='{{ report_payload | tojson | forceescape }}'
+            >
+
+            <button type="submit">
+                Download PDF Report
+            </button>
+
+        </form>
+
+
+        <button
+            type="button"
+            class="print-btn"
+            onclick="window.print()"
+        >
+            Print Report
+        </button>
+
+
+        <a href="/dashboard" class="home-btn">
+            Back to Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- PROGRESS BAR SCRIPT -->
+
+<script>
+document.querySelectorAll(".progress-fill").forEach(function(bar) {
+
+    const score = Math.max(
+        0,
+        Math.min(
+            100,
+            Number(bar.dataset.score) || 0
+        )
+    );
+
+    bar.style.width = score + "%";
+
+});
+</script>
+
+</body>
+</html>

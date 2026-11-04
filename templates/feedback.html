@@ -1,0 +1,1064 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Performance Report | InterviewGen AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        body.feedback-page {
+            margin: 0;
+            background: #0b1020;
+            color: #f4f5ff;
+            font-family: Inter, Arial, sans-serif;
+        }
+
+        .feedback-page * {
+            box-sizing: border-box;
+        }
+
+        .feedback-navbar {
+            min-height: 68px;
+            padding: 0 max(5%, calc((100% - 1100px) / 2));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #29344e;
+            background: #0e1426;
+        }
+
+        .feedback-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .feedback-logo-icon {
+            display: grid;
+            place-items: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 10px;
+            background: #302653;
+            color: #c4b8ff;
+            font-size: 13px;
+        }
+
+        .feedback-logo strong {
+            color: #a493ff;
+        }
+
+        .feedback-nav-link {
+            color: #d9dcef;
+            border: 1px solid #39445c;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .feedback-container {
+            width: min(1100px, calc(100% - 36px));
+            margin: auto;
+            padding: 42px 0 55px;
+        }
+
+        .feedback-heading {
+            margin-bottom: 25px;
+        }
+
+        .feedback-eyebrow {
+            color: #a493ff;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.7px;
+        }
+
+        .feedback-heading h1 {
+            margin: 12px 0 8px;
+            color: white;
+            font-size: clamp(28px, 4vw, 38px);
+            letter-spacing: -1px;
+        }
+
+        .feedback-heading p {
+            margin: 0;
+            color: #a6b2ca;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .feedback-overview {
+            display: grid;
+            grid-template-columns: 0.85fr 1.4fr;
+            gap: 17px;
+            margin-bottom: 34px;
+        }
+
+        .feedback-score-card,
+        .feedback-details-card,
+        .feedback-metric-card,
+        .feedback-answer-card,
+        .feedback-final-tips {
+            background: #151e33;
+            border: 1px solid #293650;
+            border-radius: 15px;
+        }
+
+        .feedback-score-card {
+            min-height: 270px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .feedback-score-ring {
+            width: 145px;
+            height: 145px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            position: relative;
+            background: conic-gradient(
+                #9278ff var(--score, 0%),
+                #303b54 0
+            );
+        }
+
+        .feedback-score-ring::before {
+            content: "";
+            position: absolute;
+            inset: 12px;
+            background: #151e33;
+            border-radius: 50%;
+        }
+
+        .feedback-score-inner {
+            z-index: 1;
+            position: relative;
+            display: flex;
+            align-items: baseline;
+        }
+
+        .feedback-score-number {
+            font-size: 39px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .feedback-score-outof {
+            color: #aab5ce;
+            font-size: 14px;
+        }
+
+        .feedback-score-card h2 {
+            margin: 17px 0 7px;
+            font-size: 20px;
+            color: white;
+        }
+
+        .feedback-score-card p {
+            max-width: 330px;
+            margin: 0;
+            color: #aab5ce;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .feedback-details-card {
+            padding: 24px 27px;
+        }
+
+        .feedback-details-card h2 {
+            margin: 0 0 15px;
+            font-size: 19px;
+        }
+
+        .feedback-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid #293650;
+            font-size: 13px;
+        }
+
+        .feedback-detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .feedback-detail-row span {
+            color: #aab5ce;
+        }
+
+        .feedback-detail-row strong {
+            color: #f2efff;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .feedback-section-heading {
+            margin-bottom: 16px;
+        }
+
+        .feedback-section-heading h2 {
+            margin: 0;
+            font-size: 21px;
+            color: white;
+        }
+
+        .feedback-section-heading p {
+            margin: 7px 0 0;
+            color: #9eabc5;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .feedback-metrics-section {
+            margin-bottom: 35px;
+        }
+
+        .feedback-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .feedback-metric-card {
+            padding: 20px;
+        }
+
+        .feedback-metric-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .feedback-metric-top span {
+            color: #aab5ce;
+            font-size: 12px;
+        }
+
+        .feedback-metric-top strong {
+            color: white;
+            font-size: 21px;
+        }
+
+        .feedback-progress {
+            height: 6px;
+            overflow: hidden;
+            border-radius: 20px;
+            background: #303b54;
+        }
+
+        .feedback-progress-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 20px;
+            background: #9278ff;
+            transition: width .8s ease;
+        }
+
+        .feedback-progress-purple {
+            background: #aa8cff;
+        }
+
+        .feedback-progress-green {
+            background: #5ec9a0;
+        }
+
+        .feedback-metric-card p {
+            margin: 12px 0 0;
+            color: #8998b5;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .feedback-answers-section {
+            margin-bottom: 35px;
+        }
+
+        .feedback-answer-card {
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .feedback-question-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 20px;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .feedback-question-summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .feedback-question-summary::after {
+            content: "+";
+            color: #a493ff;
+            font-size: 22px;
+        }
+
+        details[open] .feedback-question-summary::after {
+            content: "−";
+        }
+
+        .feedback-question-left {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            min-width: 0;
+        }
+
+        .feedback-question-number {
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 9px;
+            background: #302653;
+            color: #c4b8ff;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .feedback-question-title {
+            color: #f3f3ff;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
+        .feedback-question-score {
+            flex-shrink: 0;
+            padding: 7px 10px;
+            border-radius: 8px;
+            background: #292347;
+            color: #c4b8ff;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .feedback-question-body {
+            padding: 20px;
+            border-top: 1px solid #293650;
+        }
+
+        .feedback-question-body h3 {
+            margin: 0 0 18px;
+            color: white;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .feedback-answer-label {
+            margin-bottom: 8px;
+            color: #a493ff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+        }
+
+        .feedback-user-answer {
+            padding: 15px;
+            border: 1px solid #303b54;
+            border-radius: 9px;
+            background: #10182c;
+            color: #c4cde0;
+            font-size: 13px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .feedback-answer-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 12px 0 18px;
+            color: #8998b5;
+            font-size: 11px;
+        }
+
+        .feedback-analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .feedback-suggestions {
+            padding: 15px;
+            border: 1px solid #303b54;
+            border-radius: 10px;
+            background: #111a2e;
+            min-width: 0;
+        }
+
+        .feedback-suggestions h4 {
+            margin: 0 0 9px;
+            font-size: 12px;
+            color: #c4b8ff;
+        }
+
+        .feedback-suggestions p {
+            margin: 0;
+            color: #aab5ce;
+            font-size: 12px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .feedback-strength {
+            border-left: 3px solid #5ec9a0;
+        }
+
+        .feedback-weakness {
+            border-left: 3px solid #e6a46c;
+        }
+
+        .feedback-recommendation {
+            grid-column: 1 / -1;
+            border-left: 3px solid #9278ff;
+        }
+
+        .feedback-final-tips {
+            display: flex;
+            gap: 16px;
+            padding: 23px;
+            margin-bottom: 28px;
+        }
+
+        .feedback-tips-icon {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            background: #302653;
+            color: #c4b8ff;
+            font-size: 20px;
+        }
+
+        .feedback-final-tips h2 {
+            margin: 0 0 7px;
+            color: white;
+            font-size: 18px;
+        }
+
+        .feedback-final-tips p {
+            margin: 0 0 12px;
+            color: #9eabc5;
+            font-size: 12px;
+        }
+
+        .feedback-final-tips ul {
+            margin: 0;
+            padding-left: 19px;
+            color: #c1cbe0;
+            font-size: 12px;
+            line-height: 2;
+        }
+
+        .feedback-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 30px 0 20px;
+        }
+
+        .feedback-primary-button,
+        .feedback-secondary-button,
+        .feedback-text-button {
+            min-height: 44px;
+            padding: 12px 19px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 750;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .feedback-primary-button {
+            background: linear-gradient(110deg, #7059e8, #9278ff);
+            border: none;
+            color: white;
+        }
+
+        .feedback-secondary-button {
+            background: #18233a;
+            border: 1px solid #46516b;
+            color: #e0e4f1;
+        }
+
+        .feedback-text-button {
+            background: transparent;
+            border: 1px solid transparent;
+            color: #aab5ce;
+        }
+
+        .feedback-disclaimer {
+            max-width: 800px;
+            margin: 22px auto;
+            color: #7887a3;
+            font-size: 10px;
+            line-height: 1.8;
+            text-align: center;
+        }
+
+        .feedback-footer {
+            padding: 20px;
+            background: #0e1426;
+            border-top: 1px solid #252d43;
+            text-align: center;
+        }
+
+        .feedback-footer p {
+            margin: 0;
+            color: #8995ad;
+            font-size: 11px;
+        }
+
+        @media(max-width: 750px) {
+            .feedback-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .feedback-metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width: 520px) {
+            .feedback-navbar {
+                padding: 0 14px;
+            }
+
+            .feedback-logo {
+                font-size: 15px;
+            }
+
+            .feedback-container {
+                width: calc(100% - 26px);
+                padding-top: 28px;
+            }
+
+            .feedback-analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feedback-recommendation {
+                grid-column: auto;
+            }
+
+            .feedback-question-summary {
+                padding: 14px;
+            }
+
+            .feedback-question-body {
+                padding: 15px;
+            }
+
+            .feedback-actions {
+                flex-direction: column;
+            }
+
+            .feedback-actions > * {
+                width: 100%;
+            }
+        }
+
+        /* PROFESSIONAL PRINT / PDF DESIGN */
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 14mm 13mm 16mm;
+            }
+
+            html, body.feedback-page {
+                background: #ffffff !important;
+                color: #172033 !important;
+                font-family: Arial, sans-serif !important;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .feedback-navbar,
+            .feedback-actions,
+            .feedback-footer {
+                display: none !important;
+            }
+
+            .feedback-container {
+                width: 100% !important;
+                max-width: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .feedback-heading {
+                margin-bottom: 22px !important;
+                padding-bottom: 15px;
+                border-bottom: 2px solid #293650;
+            }
+
+            .feedback-heading h1,
+            .feedback-section-heading h2,
+            .feedback-details-card h2,
+            .feedback-score-card h2,
+            .feedback-final-tips h2 {
+                color: #172033 !important;
+            }
+
+            .feedback-heading p,
+            .feedback-section-heading p,
+            .feedback-score-card p,
+            .feedback-final-tips p {
+                color: #536078 !important;
+            }
+
+            .feedback-eyebrow,
+            .feedback-answer-label {
+                color: #5742b8 !important;
+            }
+
+            .feedback-score-card,
+            .feedback-details-card,
+            .feedback-metric-card,
+            .feedback-answer-card,
+            .feedback-final-tips {
+                background: #ffffff !important;
+                border: 1px solid #d6dce7 !important;
+                box-shadow: none !important;
+                break-inside: avoid;
+            }
+
+            .feedback-score-ring::before {
+                background: #ffffff !important;
+            }
+
+            .feedback-score-number,
+            .feedback-detail-row strong,
+            .feedback-metric-top strong,
+            .feedback-question-title,
+            .feedback-question-body h3 {
+                color: #172033 !important;
+            }
+
+            .feedback-score-outof,
+            .feedback-detail-row span,
+            .feedback-metric-top span,
+            .feedback-metric-card p {
+                color: #536078 !important;
+            }
+
+            .feedback-detail-row {
+                border-bottom-color: #e1e5ed !important;
+            }
+
+            .feedback-progress {
+                background: #e4e8f0 !important;
+            }
+
+            .feedback-question-summary {
+                display: flex !important;
+                padding: 12px 14px !important;
+                cursor: default !important;
+                border-bottom: 1px solid #d6dce7;
+            }
+
+            .feedback-question-summary::after {
+                display: none !important;
+            }
+
+            .feedback-question-number {
+                background: #eeeaff !important;
+                color: #4934a4 !important;
+            }
+
+            .feedback-question-score {
+                background: #eeeaff !important;
+                color: #4934a4 !important;
+            }
+
+            .feedback-answer-card details > .feedback-question-body,
+            .feedback-answer-card details:not([open]) > .feedback-question-body {
+                display: block !important;
+            }
+
+            .feedback-question-body {
+                display: block !important;
+                padding: 14px !important;
+                border-top: none !important;
+            }
+
+            .feedback-user-answer,
+            .feedback-suggestions {
+                background: #f7f8fb !important;
+                border-color: #dce1ea !important;
+            }
+
+            .feedback-user-answer,
+            .feedback-suggestions p,
+            .feedback-final-tips ul {
+                color: #26334a !important;
+            }
+
+            .feedback-suggestions h4 {
+                color: #4934a4 !important;
+            }
+
+            .feedback-answer-meta {
+                color: #536078 !important;
+            }
+
+            .feedback-overview {
+                grid-template-columns: 0.85fr 1.4fr !important;
+            }
+
+            .feedback-metrics-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+
+            .feedback-analysis-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+
+            .feedback-recommendation {
+                grid-column: 1 / -1 !important;
+            }
+
+            .feedback-answers-section,
+            .feedback-metrics-section {
+                margin-bottom: 22px !important;
+            }
+
+            .feedback-answer-card {
+                break-inside: auto !important;
+            }
+
+            .feedback-question-body,
+            .feedback-suggestions,
+            .feedback-user-answer {
+                break-inside: avoid !important;
+            }
+
+            .feedback-disclaimer {
+                color: #536078 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="feedback-page">
+
+    {% set score = average_score|default(0)|float %}
+    {% set question_results = results|default([]) %}
+    {% set totals = namespace(words=0) %}
+
+    {% for item in question_results %}
+        {% set totals.words = totals.words + (item.word_count|default(0)|int) %}
+    {% endfor %}
+
+    <header class="feedback-navbar">
+        <a href="{{ url_for('home') }}" class="feedback-logo">
+            <span class="feedback-logo-icon">IG</span>
+            <span>InterviewGen <strong>AI</strong></span>
+        </a>
+
+        <a href="{{ url_for('interview_setup') }}" class="feedback-nav-link">
+            New Interview →
+        </a>
+    </header>
+
+    <main class="feedback-container">
+
+        <section class="feedback-heading">
+            <span class="feedback-eyebrow">INTERVIEW COMPLETED</span>
+            <h1>Your Performance Report</h1>
+            <p>
+                Review your results, understand your strengths and identify
+                the skills you can improve for your next interview.
+            </p>
+        </section>
+
+        <section class="feedback-overview">
+
+            <article class="feedback-score-card">
+                <div class="feedback-score-ring" data-score="{{ score }}">
+                    <div class="feedback-score-inner">
+                        <span class="feedback-score-number">{{ score|round(0)|int }}</span>
+                        <span class="feedback-score-outof">/100</span>
+                    </div>
+                </div>
+
+                <h2>
+                    {% if score >= 80 %}
+                        Excellent Performance
+                    {% elif score >= 60 %}
+                        Good Progress
+                    {% elif score >= 40 %}
+                        Keep Practising
+                    {% else %}
+                        Keep Learning
+                    {% endif %}
+                </h2>
+
+                <p>
+                    {% if score >= 80 %}
+                        Strong performance. Continue developing your knowledge and communication skills.
+                    {% elif score >= 60 %}
+                        You have a good foundation. Add more details and practical examples.
+                    {% elif score >= 40 %}
+                        Focus on improving the clarity and completeness of your answers.
+                    {% else %}
+                        Use this report to identify gaps and improve through regular practice.
+                    {% endif %}
+                </p>
+            </article>
+
+            <article class="feedback-details-card">
+                <h2>Interview Summary</h2>
+
+                <div class="feedback-detail-row">
+                    <span>Job Role</span>
+                    <strong>{{ role|default('Software Engineer') }}</strong>
+                </div>
+
+                <div class="feedback-detail-row">
+                    <span>Interview Type</span>
+                    <strong>{{ interview_type|default('Technical') }}</strong>
+                </div>
+
+                <div class="feedback-detail-row">
+                    <span>Difficulty</span>
+                    <strong>{{ difficulty|default('Beginner') }}</strong>
+                </div>
+
+                <div class="feedback-detail-row">
+                    <span>Questions Evaluated</span>
+                    <strong>{{ question_results|length }}</strong>
+                </div>
+
+                <div class="feedback-detail-row">
+                    <span>Total Words</span>
+                    <strong>{{ totals.words }}</strong>
+                </div>
+
+                <div class="feedback-detail-row">
+                    <span>AI Evaluator</span>
+                    <strong>{{ model_name|default('Qwen 2.5 3B') }}</strong>
+                </div>
+            </article>
+
+        </section>
+
+        <section class="feedback-metrics-section">
+            <div class="feedback-section-heading">
+                <h2>Performance Overview</h2>
+                <p>Your key interview statistics.</p>
+            </div>
+
+            <div class="feedback-metrics-grid">
+
+                <article class="feedback-metric-card">
+                    <div class="feedback-metric-top">
+                        <span>Overall Score</span>
+                        <strong>{{ score|round(1) }}%</strong>
+                    </div>
+                    <div class="feedback-progress">
+                        <div class="feedback-progress-fill" data-progress="{{ score }}"></div>
+                    </div>
+                    <p>Average score across your evaluated answers.</p>
+                </article>
+
+                <article class="feedback-metric-card">
+                    <div class="feedback-metric-top">
+                        <span>Questions Evaluated</span>
+                        <strong>{{ question_results|length }}</strong>
+                    </div>
+                    <div class="feedback-progress">
+                        <div class="feedback-progress-fill feedback-progress-purple"
+                             data-progress="{{ 100 if question_results|length > 0 else 0 }}"></div>
+                    </div>
+                    <p>Number of answers evaluated by your AI model.</p>
+                </article>
+
+                <article class="feedback-metric-card">
+                    <div class="feedback-metric-top">
+                        <span>Total Words</span>
+                        <strong>{{ totals.words }}</strong>
+                    </div>
+                    <div class="feedback-progress">
+                        <div class="feedback-progress-fill feedback-progress-green"
+                             data-progress="{{ [totals.words, 100]|min }}"></div>
+                    </div>
+                    <p>Total words submitted across all answers.</p>
+                </article>
+
+            </div>
+        </section>
+
+        <section class="feedback-answers-section">
+
+            <div class="feedback-section-heading">
+                <h2>Question-wise AI Feedback</h2>
+                <p>
+                    Open each question to review your answer, score and
+                    personalized improvement suggestions.
+                </p>
+            </div>
+
+            {% for item in question_results %}
+
+            <article class="feedback-answer-card">
+                <details>
+                    <summary class="feedback-question-summary">
+
+                        <div class="feedback-question-left">
+                            <span class="feedback-question-number">
+                                {{ "%02d"|format(loop.index) }}
+                            </span>
+
+                            <span class="feedback-question-title">
+                                {{ item.question|default('Interview question') }}
+                            </span>
+                        </div>
+
+                        <span class="feedback-question-score">
+                            {{ item.score|default(0)|round(1) }}/100
+                        </span>
+
+                    </summary>
+
+                    <div class="feedback-question-body">
+
+                        <h3>{{ item.question|default('Interview question') }}</h3>
+
+                        <div class="feedback-answer-label">YOUR ANSWER</div>
+
+                        <div class="feedback-user-answer">{{ item.answer|default('No answer provided.') }}</div>
+
+                        <div class="feedback-answer-meta">
+                            <span>{{ item.word_count|default(0) }} words</span>
+                            <span>AI Evaluation</span>
+                        </div>
+
+                        <div class="feedback-analysis-grid">
+
+                            <div class="feedback-suggestions feedback-strength">
+                                <h4>✓ Strengths</h4>
+                                <p>{{ item.strengths|default('No strengths identified.') }}</p>
+                            </div>
+
+                            <div class="feedback-suggestions feedback-weakness">
+                                <h4>Areas to Improve</h4>
+                                <p>{{ item.weaknesses|default('No weaknesses identified.') }}</p>
+                            </div>
+
+                            <div class="feedback-suggestions feedback-recommendation">
+                                <h4>✦ AI Recommendations</h4>
+                                <p>{{ item.suggestions|default('Continue practising your answers.') }}</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </details>
+            </article>
+
+            {% else %}
+
+            <article class="feedback-answer-card">
+                <div class="feedback-question-body">
+                    <h3>No interview results available</h3>
+                    <p>Please complete an interview to receive AI-generated feedback.</p>
+                </div>
+            </article>
+
+            {% endfor %}
+
+        </section>
+
+        <section class="feedback-final-tips">
+            <div class="feedback-tips-icon">✦</div>
+            <div>
+                <h2>Recommended Next Steps</h2>
+                <p>Use these recommendations to prepare for your next interview.</p>
+                <ul>
+                    <li>Explain technical concepts using practical examples.</li>
+                    <li>Keep answers clear, relevant and well structured.</li>
+                    <li>Review the weaknesses identified in this report.</li>
+                    <li>Practise regularly and track your progress.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="feedback-actions">
+            <a href="{{ url_for('interview_setup') }}" class="feedback-primary-button">
+                Practise Again →
+            </a>
+
+            <button type="button" class="feedback-secondary-button" onclick="window.print()">
+                Print / Save PDF
+            </button>
+
+            <a href="{{ url_for('home') }}" class="feedback-text-button">
+                Back to Home
+            </a>
+        </section>
+
+        <p class="feedback-disclaimer">
+            This report is generated using a locally running AI model.
+            Scores and suggestions are estimates and may not always reflect
+            factual correctness or actual job readiness.
+        </p>
+
+    </main>
+
+    <footer class="feedback-footer">
+        <p>© 2026 InterviewGen AI · Practise today. Improve tomorrow.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.querySelectorAll(".feedback-score-ring").forEach(function (element) {
+                const score = Math.max(0, Math.min(100, Number(element.dataset.score) || 0));
+                element.style.setProperty("--score", score + "%");
+            });
+
+            document.querySelectorAll("[data-progress]").forEach(function (element) {
+                const progress = Math.max(0, Math.min(100, Number(element.dataset.progress) || 0));
+                element.style.width = progress + "%";
+            });
+
+        });
+    </script>
+
+</body>
+</html>

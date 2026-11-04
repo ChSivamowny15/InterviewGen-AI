@@ -1,0 +1,1462 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview | InterviewGen AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #202438;
+        }
+
+        .navbar {
+            background: #171b3b;
+            color: white;
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1450px;
+            margin: 28px auto;
+            padding: 0 20px;
+        }
+
+        .interview-info {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 12px 18px;
+            border-radius: 9px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .video-panel {
+            background: white;
+            padding: 18px;
+            border-radius: 15px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+            min-width: 0;
+        }
+
+        .video-panel h3 {
+            margin-bottom: 15px;
+        }
+
+        .ai-screen,
+        .camera-screen {
+            height: 390px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            overflow: hidden;
+        }
+
+        .ai-screen {
+            background: linear-gradient(135deg, #252b60, #5664bd);
+        }
+
+        .avatar {
+            width: 112px;
+            height: 112px;
+            border-radius: 50%;
+            background: white;
+            color: #303b85;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 45px;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        .ai-screen p {
+            margin-top: 12px;
+        }
+
+        .camera-screen {
+            background: #171b2d;
+            position: relative;
+        }
+
+        #candidate-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        #camera-placeholder {
+            text-align: center;
+            padding: 20px;
+        }
+
+        #camera-placeholder span {
+            display: block;
+            font-size: 50px;
+            margin-bottom: 12px;
+        }
+
+        .text-ai-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .small-avatar {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: #4c63d2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            font-weight: bold;
+            flex: 0 0 auto;
+        }
+
+        .text-ai-panel p {
+            color: #626b80;
+            margin-top: 5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        button {
+            border: none;
+            padding: 13px 22px;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .primary {
+            background: #4c63d2;
+            color: white;
+        }
+
+        .danger {
+            background: #ffecec;
+            color: #c13c3c;
+        }
+
+        .success {
+            background: #168653;
+            color: white;
+        }
+
+        .secondary {
+            background: #e8eaf2;
+            color: #30364e;
+        }
+
+        .status {
+            margin-top: 13px;
+            color: #626b80;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .question-card {
+            background: white;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+        }
+
+        .question-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            color: #4c63d2;
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .timer {
+            color: #d65b25;
+            background: #fff0e9;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .progress-track {
+            height: 8px;
+            background: #e8eaf2;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            background: #4c63d2;
+            transition: width 0.3s;
+        }
+
+        .question-text {
+            font-size: 24px;
+            line-height: 1.6;
+            color: #202438;
+        }
+
+        .answer-area {
+            margin-top: 22px;
+        }
+
+        .answer-area label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #answer-input {
+            width: 100%;
+            min-height: 150px;
+            resize: vertical;
+            border: 1px solid #d9deeb;
+            border-radius: 10px;
+            padding: 14px;
+            font: inherit;
+            line-height: 1.5;
+            outline: none;
+        }
+
+        #answer-input:focus {
+            border-color: #4c63d2;
+            box-shadow: 0 0 0 3px rgba(76,99,210,0.1);
+        }
+
+        .answer-tools {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 800px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-screen,
+            .camera-screen {
+                height: 300px;
+            }
+
+            .question-text {
+                font-size: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <h2>InterviewGen AI</h2>
+    <a href="/dashboard">Dashboard</a>
+</nav>
+
+<main class="container">
+
+    {% set mode = interview_mode|default('video') %}
+
+    <div class="interview-info">
+        <div class="info-item">
+            <strong>Role:</strong> {{ role }}
+        </div>
+
+        <div class="info-item">
+            <strong>Interview Type:</strong> {{ interview_type }}
+        </div>
+
+        <div class="info-item">
+            <strong>Difficulty:</strong> {{ difficulty }}
+        </div>
+
+        <div class="info-item">
+            <strong>Mode:</strong>
+            {{ 'Live Video Interview' if mode == 'video' else 'Text-Based Interview' }}
+        </div>
+    </div>
+
+    {% if mode == 'video' %}
+
+    <section class="video-grid" id="video-interface">
+
+        <div class="video-panel">
+            <h3>AI Interviewer</h3>
+
+            <div class="ai-screen">
+                <div class="avatar">AI</div>
+                <h2>AI Interviewer</h2>
+                <p id="ai-status">Waiting to start the interview</p>
+            </div>
+        </div>
+
+        <div class="video-panel">
+            <h3>Your Camera</h3>
+
+            <div class="camera-screen">
+                <div id="camera-placeholder">
+                    <span>📷</span>
+                    <p>Your live camera will appear here.</p>
+                </div>
+
+                <video id="candidate-video" autoplay muted playsinline></video>
+            </div>
+        </div>
+
+    </section>
+
+    {% else %}
+
+    <section class="text-ai-panel" id="text-ai-interface">
+        <div class="small-avatar">AI</div>
+
+        <div>
+            <h3>AI Interviewer</h3>
+            <p id="ai-status">Ready to read your interview questions aloud.</p>
+        </div>
+    </section>
+
+    {% endif %}
+
+    <div class="controls">
+
+        <button type="button" class="primary" id="start-interview">
+            {{ 'Start Live Interview' if mode == 'video' else 'Start Text Interview' }}
+        </button>
+
+        <button type="button" class="danger" id="stop-interview" disabled>
+            Stop Interview
+        </button>
+
+        <button type="button" class="success" id="submit-interview" disabled>
+            Submit Interview
+        </button>
+
+    </div>
+
+    <p class="status" id="interview-status">
+        Click Start Interview to begin.
+    </p>
+
+    {% if mode == 'video' %}
+    <p class="status" id="face-status">
+        Face detection: Not started
+    </p>
+    {% endif %}
+
+    <section class="question-card">
+
+        <div class="question-top">
+            <div class="question-number" id="question-number">
+                Question 1
+            </div>
+
+            <div class="timer" id="timer">
+                Time: 02:00
+            </div>
+        </div>
+
+        <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <h2 class="question-text" id="question-text">
+            Loading question...
+        </h2>
+
+        {% if mode == 'text' %}
+
+        <div class="answer-area">
+            <label for="answer-input">Your Answer</label>
+
+            <textarea
+                id="answer-input"
+                placeholder="Type your answer here..."
+                disabled></textarea>
+
+            <div class="answer-tools">
+                <button type="button" class="secondary" id="mic-button" disabled>
+                    🎙 Start Speaking
+                </button>
+
+                <button type="button" class="secondary" id="stop-mic-button" disabled>
+                    Stop Microphone
+                </button>
+            </div>
+
+            <p class="status">
+                You can type your answer or use the microphone.
+                Spoken answers will appear in the answer box.
+            </p>
+        </div>
+
+        {% endif %}
+
+        <div class="navigation">
+            <button type="button" class="secondary" id="previous-button" disabled>
+                Previous
+            </button>
+
+            <button type="button" class="primary" id="next-button" disabled>
+                Next Question
+            </button>
+        </div>
+
+    </section>
+
+</main>
+
+<canvas id="frame-canvas" class="hidden"></canvas>
+
+<form id="result-form" method="POST" action="/submit-interview">
+
+    <input type="hidden" name="role" value="{{ role }}">
+    <input type="hidden" name="interview_type" value="{{ interview_type }}">
+    <input type="hidden" name="difficulty" value="{{ difficulty }}">
+    <input type="hidden" name="interview_mode" value="{{ mode }}">
+
+    <input type="hidden" name="questions_json" id="questions-json">
+    <input type="hidden" name="answers_json" id="answers-json">
+    <input type="hidden" name="time_taken_json" id="time-taken-json">
+
+</form>
+
+<script type="application/json" id="interview-config">
+{{ {
+    "questions": questions,
+    "time_limit": question_time_limit|default(120),
+    "mode": mode
+} | tojson }}
+</script>
+
+<script>
+
+"use strict";
+
+// ================================================
+// CONFIGURATION
+// ================================================
+
+const config = JSON.parse(
+    document.getElementById("interview-config").textContent
+);
+
+const questions = (config.questions || [])
+    .map(q => typeof q === "string" ? q : (q.text || ""))
+    .filter(Boolean);
+
+const timeLimit = Number(config.time_limit) || 120;
+const mode = config.mode === "text" ? "text" : "video";
+const isVideoMode = mode === "video";
+
+
+// ================================================
+// STATE
+// ================================================
+
+let currentIndex = 0;
+let remainingTime = timeLimit;
+let timerInterval = null;
+let cameraStream = null;
+let recognition = null;
+let recognizing = false;
+let interviewStarted = false;
+let interviewStopped = false;
+let frameInterval = null;
+let frameBusy = false;
+let finalTranscript = "";
+let selectedVoice = null;
+let recognitionShouldRun = false;
+
+// IMPORTANT: Every question has its own answer.
+const answers = new Array(questions.length).fill("");
+const timeTaken = new Array(questions.length).fill(0);
+const questionStart = new Array(questions.length).fill(null);
+
+// Track which question owns the current microphone session.
+let recognitionQuestionIndex = null;
+
+
+// ================================================
+// HTML ELEMENTS
+// ================================================
+
+const video = document.getElementById("candidate-video");
+const canvas = document.getElementById("frame-canvas");
+const questionText = document.getElementById("question-text");
+const questionNumber = document.getElementById("question-number");
+const timerElement = document.getElementById("timer");
+const progressFill = document.getElementById("progress-fill");
+const interviewStatus = document.getElementById("interview-status");
+const aiStatus = document.getElementById("ai-status");
+const faceStatus = document.getElementById("face-status");
+
+const startButton = document.getElementById("start-interview");
+const stopButton = document.getElementById("stop-interview");
+const submitButton = document.getElementById("submit-interview");
+const nextButton = document.getElementById("next-button");
+const previousButton = document.getElementById("previous-button");
+
+const answerInput = document.getElementById("answer-input");
+const micButton = document.getElementById("mic-button");
+const stopMicButton = document.getElementById("stop-mic-button");
+
+
+// ================================================
+// AI INTERVIEWER VOICE
+// ================================================
+
+function loadInterviewerVoice() {
+
+    if (!("speechSynthesis" in window)) return;
+
+    const voices = window.speechSynthesis.getVoices();
+
+    selectedVoice =
+        voices.find(v => v.lang.toLowerCase() === "en-in") ||
+        voices.find(v => v.lang.toLowerCase().startsWith("en")) ||
+        voices[0] ||
+        null;
+}
+
+if ("speechSynthesis" in window) {
+    loadInterviewerVoice();
+    window.speechSynthesis.onvoiceschanged = loadInterviewerVoice;
+}
+
+
+function stopInterviewerVoice() {
+
+    if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+    }
+
+    if (aiStatus) {
+        aiStatus.textContent = "Waiting for the next question";
+    }
+}
+
+
+function speakCurrentQuestion() {
+
+    if (!questions.length || !("speechSynthesis" in window)) {
+        interviewStatus.textContent =
+            "Interviewer voice is not supported in this browser.";
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(
+        questions[currentIndex]
+    );
+
+    loadInterviewerVoice();
+
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        utterance.lang = selectedVoice.lang;
+    } else {
+        utterance.lang = "en-IN";
+    }
+
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    utterance.onstart = () => {
+
+        if (aiStatus) {
+            aiStatus.textContent = "Speaking the question...";
+        }
+
+        interviewStatus.textContent =
+            "AI interviewer is asking the question.";
+    };
+
+    utterance.onend = () => {
+
+        if (aiStatus) {
+            aiStatus.textContent = "Listening to your answer";
+        }
+
+        interviewStatus.textContent = isVideoMode
+            ? "Your turn. Please answer using your microphone."
+            : "Your turn. Type your answer or use the microphone.";
+
+        if (isVideoMode && interviewStarted) {
+            recognitionQuestionIndex = currentIndex;
+            recognitionShouldRun = true;
+            startListening();
+        }
+    };
+
+    utterance.onerror = event => {
+        interviewStatus.textContent =
+            "Interviewer voice error: " + event.error;
+    };
+
+    window.speechSynthesis.speak(utterance);
+}
+
+
+// ================================================
+// SPEECH RECOGNITION
+// ================================================
+
+const SpeechRecognitionAPI =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+function setupSpeechRecognition() {
+
+    if (!SpeechRecognitionAPI) {
+
+        interviewStatus.textContent =
+            "Speech recognition is not supported. Please use Google Chrome.";
+
+        return false;
+    }
+
+    if (recognition) return true;
+
+    recognition = new SpeechRecognitionAPI();
+
+    recognition.lang = "en-IN";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => {
+
+        recognizing = true;
+
+        interviewStatus.textContent =
+            "Microphone is active. Speak your answer.";
+
+        if (aiStatus && !window.speechSynthesis.speaking) {
+            aiStatus.textContent = "Listening to your answer";
+        }
+
+        if (micButton) {
+            micButton.disabled = true;
+            stopMicButton.disabled = false;
+            micButton.textContent = "🎙 Microphone Active";
+        }
+    };
+
+
+    recognition.onresult = event => {
+
+        // Never save microphone output into another question.
+        const targetIndex = recognitionQuestionIndex;
+
+        if (
+            targetIndex === null ||
+            targetIndex < 0 ||
+            targetIndex >= answers.length
+        ) return;
+
+        let interim = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+
+            const transcript = event.results[i][0].transcript;
+
+            if (event.results[i].isFinal) {
+
+                finalTranscript +=
+                    (finalTranscript ? " " : "") + transcript;
+
+            } else {
+
+                interim += transcript;
+            }
+        }
+
+        const combined =
+            (finalTranscript + " " + interim).trim();
+
+        answers[targetIndex] = combined;
+
+        if (answerInput && targetIndex === currentIndex) {
+            answerInput.value = combined;
+        }
+    };
+
+
+    recognition.onerror = event => {
+
+        if (
+            event.error !== "no-speech" &&
+            event.error !== "aborted"
+        ) {
+            interviewStatus.textContent =
+                "Microphone error: " + event.error;
+        }
+    };
+
+
+    recognition.onend = () => {
+
+        recognizing = false;
+
+        if (micButton) {
+            micButton.disabled = !interviewStarted;
+            stopMicButton.disabled = true;
+            micButton.textContent = "🎙 Start Speaking";
+        }
+
+        if (
+            recognitionShouldRun &&
+            interviewStarted &&
+            !interviewStopped &&
+            isVideoMode
+        ) {
+
+            setTimeout(() => {
+
+                if (
+                    recognitionShouldRun &&
+                    interviewStarted &&
+                    !recognizing
+                ) {
+                    startListening();
+                }
+
+            }, 350);
+        }
+    };
+
+    return true;
+}
+
+
+function startListening() {
+
+    if (!recognition || recognizing || !interviewStarted) return;
+
+    try {
+        recognition.start();
+    } catch (error) {
+        console.log("Speech recognition starting:", error.message);
+    }
+}
+
+
+function stopListening() {
+
+    recognitionShouldRun = false;
+
+    if (recognition && recognizing) {
+
+        try {
+            recognition.stop();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+}
+
+
+// ================================================
+// TEXT MODE MICROPHONE
+// ================================================
+
+function startTextMicrophone() {
+
+    if (!interviewStarted) return;
+
+    if (!setupSpeechRecognition()) return;
+
+    // Start microphone for the current question only.
+    saveCurrentAnswer();
+
+    finalTranscript = answers[currentIndex] || "";
+    recognitionQuestionIndex = currentIndex;
+    recognitionShouldRun = false;
+
+    startListening();
+}
+
+
+function stopTextMicrophone() {
+
+    if (recognition && recognizing) {
+        try {
+            recognition.stop();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+}
+
+
+// ================================================
+// TIMER
+// ================================================
+
+function updateTimer() {
+
+    const minutes = Math.floor(remainingTime / 60);
+    const seconds = remainingTime % 60;
+
+    timerElement.textContent =
+        "Time: " +
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(seconds).padStart(2, "0");
+}
+
+
+function recordQuestionTime() {
+
+    if (questionStart[currentIndex] === null) return;
+
+    timeTaken[currentIndex] = Math.min(
+        timeLimit,
+        Math.max(0, timeLimit - remainingTime)
+    );
+
+    questionStart[currentIndex] = null;
+}
+
+
+function startTimer() {
+
+    clearInterval(timerInterval);
+
+    timerInterval = setInterval(() => {
+
+        if (!interviewStarted) return;
+
+        if (remainingTime > 0) {
+            remainingTime--;
+            updateTimer();
+        } else {
+            moveNext();
+        }
+
+    }, 1000);
+}
+
+
+// ================================================
+// ANSWER STORAGE
+// ================================================
+
+function saveCurrentAnswer() {
+
+    if (answerInput) {
+        answers[currentIndex] = answerInput.value;
+    }
+}
+
+
+// ================================================
+// DISPLAY QUESTION
+// ================================================
+
+function displayQuestion() {
+
+    if (!questions.length) {
+
+        questionText.textContent = "No questions are available.";
+        startButton.disabled = true;
+        return;
+    }
+
+    // IMPORTANT:
+    // Do NOT call saveCurrentAnswer() here.
+    // The old question has already been saved before changing index.
+
+    questionText.textContent = questions[currentIndex];
+
+    questionNumber.textContent =
+        "Question " + (currentIndex + 1) +
+        " of " + questions.length;
+
+    progressFill.style.width =
+        ((currentIndex + 1) / questions.length) * 100 + "%";
+
+    previousButton.disabled =
+        currentIndex === 0 || !interviewStarted;
+
+    nextButton.textContent =
+        currentIndex === questions.length - 1
+            ? "Finish Questions"
+            : "Next Question";
+
+    nextButton.disabled = !interviewStarted;
+
+    // Load ONLY the answer belonging to this question.
+    if (answerInput) {
+        answerInput.value = answers[currentIndex] || "";
+    }
+
+    remainingTime = timeLimit;
+
+    questionStart[currentIndex] =
+        interviewStarted ? Date.now() : null;
+
+    updateTimer();
+
+    if (interviewStarted) {
+
+        finalTranscript = answers[currentIndex] || "";
+
+        if (isVideoMode) {
+            recognitionQuestionIndex = currentIndex;
+            recognitionShouldRun = false;
+        }
+
+        speakCurrentQuestion();
+    }
+}
+
+
+// ================================================
+// QUESTION NAVIGATION
+// ================================================
+
+function moveNext() {
+
+    if (!interviewStarted) return;
+
+    // Save the current answer BEFORE changing question index.
+    saveCurrentAnswer();
+
+    recordQuestionTime();
+
+    stopListening();
+
+    stopInterviewerVoice();
+
+    if (currentIndex < questions.length - 1) {
+
+        currentIndex++;
+
+        displayQuestion();
+
+        startTimer();
+
+    } else {
+
+        finishInterview();
+    }
+}
+
+
+function movePrevious() {
+
+    if (!interviewStarted || currentIndex === 0) return;
+
+    // Save current question before going backwards.
+    saveCurrentAnswer();
+
+    recordQuestionTime();
+
+    stopListening();
+
+    stopInterviewerVoice();
+
+    currentIndex--;
+
+    displayQuestion();
+
+    startTimer();
+}
+
+
+nextButton.addEventListener("click", moveNext);
+previousButton.addEventListener("click", movePrevious);
+
+
+// ================================================
+// CAMERA
+// ================================================
+
+async function startCamera() {
+
+    if (
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+    ) {
+        throw new Error(
+            "Camera access requires HTTPS or localhost."
+        );
+    }
+
+    cameraStream =
+        await navigator.mediaDevices.getUserMedia({
+            video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            },
+            audio: true
+        });
+
+    video.srcObject = cameraStream;
+
+    await video.play();
+
+    video.style.display = "block";
+
+    document.getElementById(
+        "camera-placeholder"
+    ).style.display = "none";
+
+    faceStatus.textContent = "Face detection: Checking...";
+
+    frameInterval = setInterval(analyzeFrame, 2000);
+
+    analyzeFrame();
+}
+
+
+function stopCamera() {
+
+    clearInterval(frameInterval);
+    frameInterval = null;
+
+    if (cameraStream) {
+
+        cameraStream.getTracks().forEach(track => track.stop());
+
+        cameraStream = null;
+    }
+
+    if (video) {
+        video.srcObject = null;
+        video.style.display = "none";
+    }
+
+    const placeholder =
+        document.getElementById("camera-placeholder");
+
+    if (placeholder) {
+        placeholder.style.display = "block";
+    }
+
+    if (faceStatus) {
+        faceStatus.textContent = "Face detection: Not started";
+    }
+}
+
+
+// ================================================
+// FACE DETECTION
+// ================================================
+
+async function analyzeFrame() {
+
+    if (
+        !cameraStream ||
+        video.readyState < 2 ||
+        frameBusy
+    ) return;
+
+    frameBusy = true;
+
+    try {
+
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+
+        if (!width || !height) return;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        canvas.getContext("2d").drawImage(
+            video, 0, 0, width, height
+        );
+
+        const response = await fetch("/analyze-frame", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                image: canvas.toDataURL("image/jpeg", 0.65)
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+
+            faceStatus.textContent =
+                "Face detection: " +
+                (result.message || "Unable to analyze frame");
+
+            return;
+        }
+
+        faceStatus.textContent = result.face_detected
+            ? "Face detection: Face detected (" + result.face_count + ")"
+            : "Face detection: No face detected";
+
+    } catch (error) {
+
+        if (faceStatus) {
+            faceStatus.textContent = "Face detection error.";
+        }
+
+    } finally {
+
+        frameBusy = false;
+    }
+}
+
+
+// ================================================
+// START INTERVIEW
+// ================================================
+
+startButton.addEventListener("click", async () => {
+
+    if (interviewStarted) return;
+
+    if (!questions.length) {
+        alert("No interview questions are available.");
+        return;
+    }
+
+    if (!("speechSynthesis" in window)) {
+        alert(
+            "Your browser does not support interviewer voice. Please use Google Chrome."
+        );
+        return;
+    }
+
+    if (isVideoMode && !setupSpeechRecognition()) return;
+
+    try {
+
+        interviewStatus.textContent = isVideoMode
+            ? "Requesting camera and microphone permission..."
+            : "Starting your text interview...";
+
+        if (isVideoMode) {
+            await startCamera();
+        }
+
+        interviewStarted = true;
+        interviewStopped = false;
+
+        startButton.disabled = true;
+        stopButton.disabled = false;
+        submitButton.disabled = true;
+        nextButton.disabled = false;
+
+        previousButton.disabled = currentIndex === 0;
+
+        if (answerInput) {
+            answerInput.disabled = false;
+        }
+
+        if (micButton) {
+            micButton.disabled = false;
+        }
+
+        interviewStatus.textContent = "Interview started.";
+
+        displayQuestion();
+
+        startTimer();
+
+    } catch (error) {
+
+        interviewStarted = false;
+
+        stopCamera();
+        stopInterviewerVoice();
+
+        startButton.disabled = false;
+
+        interviewStatus.textContent =
+            "Unable to start interview: " + error.message;
+    }
+});
+
+
+// ================================================
+// STOP INTERVIEW
+// ================================================
+
+stopButton.addEventListener("click", () => {
+
+    saveCurrentAnswer();
+
+    interviewStarted = false;
+    interviewStopped = true;
+
+    clearInterval(timerInterval);
+
+    recordQuestionTime();
+
+    stopListening();
+    stopInterviewerVoice();
+
+    if (isVideoMode) {
+        stopCamera();
+    }
+
+    startButton.disabled = false;
+    stopButton.disabled = true;
+    nextButton.disabled = true;
+    previousButton.disabled = true;
+
+    if (answerInput) {
+        answerInput.disabled = true;
+    }
+
+    if (micButton) {
+        micButton.disabled = true;
+    }
+
+    if (stopMicButton) {
+        stopMicButton.disabled = true;
+    }
+
+    submitButton.disabled = false;
+
+    if (aiStatus) {
+        aiStatus.textContent = "Interview stopped";
+    }
+
+    interviewStatus.textContent =
+        "Interview stopped. You can submit your captured answers.";
+});
+
+
+// ================================================
+// FINISH INTERVIEW
+// ================================================
+
+function finishInterview() {
+
+    saveCurrentAnswer();
+
+    interviewStarted = false;
+    interviewStopped = true;
+
+    clearInterval(timerInterval);
+
+    recordQuestionTime();
+
+    stopListening();
+    stopInterviewerVoice();
+
+    nextButton.disabled = true;
+    previousButton.disabled = true;
+    stopButton.disabled = true;
+
+    if (answerInput) {
+        answerInput.disabled = true;
+    }
+
+    if (micButton) {
+        micButton.disabled = true;
+    }
+
+    if (stopMicButton) {
+        stopMicButton.disabled = true;
+    }
+
+    submitButton.disabled = false;
+
+    if (aiStatus) {
+        aiStatus.textContent = "Interview completed";
+    }
+
+    interviewStatus.textContent =
+        "All questions completed. Click Submit Interview to evaluate your answers.";
+}
+
+
+// ================================================
+// TEXT MODE MICROPHONE BUTTONS
+// ================================================
+
+if (micButton) {
+    micButton.addEventListener("click", startTextMicrophone);
+}
+
+if (stopMicButton) {
+    stopMicButton.addEventListener("click", stopTextMicrophone);
+}
+
+
+// Save typed answers immediately to their own index.
+if (answerInput) {
+
+    answerInput.addEventListener("input", () => {
+
+        answers[currentIndex] = answerInput.value;
+
+    });
+}
+
+
+// ================================================
+// SUBMIT INTERVIEW
+// ================================================
+
+submitButton.addEventListener("click", () => {
+
+    // Save the currently displayed question.
+    saveCurrentAnswer();
+
+    if (!confirm(
+        "Are you sure you want to submit your interview?"
+    )) return;
+
+    // Submit each answer separately in its original order.
+    document.getElementById("questions-json").value =
+        JSON.stringify(questions);
+
+    document.getElementById("answers-json").value =
+        JSON.stringify(answers);
+
+    document.getElementById("time-taken-json").value =
+        JSON.stringify(timeTaken);
+
+    interviewStarted = false;
+
+    clearInterval(timerInterval);
+
+    stopListening();
+    stopInterviewerVoice();
+
+    if (isVideoMode) {
+        stopCamera();
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+
+    document.getElementById("result-form").submit();
+});
+
+
+// ================================================
+// CLEANUP
+// ================================================
+
+window.addEventListener("pagehide", () => {
+
+    interviewStarted = false;
+    interviewStopped = true;
+
+    clearInterval(timerInterval);
+    clearInterval(frameInterval);
+
+    stopListening();
+    stopInterviewerVoice();
+
+    if (isVideoMode) {
+        stopCamera();
+    }
+});
+
+
+// ================================================
+// INITIALIZE
+// ================================================
+
+if (questions.length > 0) {
+
+    displayQuestion();
+
+} else {
+
+    questionText.textContent =
+        "No questions were provided by the server.";
+
+    startButton.disabled = true;
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,327 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>InterviewGen AI | Smart Interview Preparation</title>
+
+    <meta name="description"
+          content="Prepare for job interviews with InterviewGen AI, your AI-powered mock interview and performance analysis platform.">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="navbar">
+
+        <a href="/" class="logo">
+            InterviewGen <span>AI</span>
+        </a>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+        </nav>
+
+        <a href="{{ url_for('interview_setup') }}" class="nav-button">
+            Start Interview
+        </a>
+
+    </header>
+
+    <main>
+
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+
+            <div class="hero-content">
+
+                <p class="tagline">
+                    YOUR PERSONAL AI INTERVIEW COACH
+                </p>
+
+                <h1>
+                    Practice Smarter.<br>
+                    <span>Interview Better.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Prepare for your dream job with AI-powered mock interviews,
+                    resume analysis, communication feedback, and personalized
+                    performance reports.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a href="{{ url_for('interview_setup') }}"
+                       class="primary-button">
+                        Start Interview →
+                    </a>
+
+                    <a href="#how-it-works" class="secondary-button">
+                        How It Works
+                    </a>
+
+                </div>
+
+                <div class="trust-text">
+                    Practice • Improve • Succeed
+                </div>
+
+            </div>
+
+            <!-- Interview Dashboard Preview -->
+            <div class="hero-card">
+
+                <div class="card-top">
+
+                    <div>
+                        <p class="small-text">YOUR PRACTICE SPACE</p>
+                        <h2>Interview Dashboard</h2>
+                    </div>
+
+                    <span class="status">READY</span>
+
+                </div>
+
+                <div class="score-circle">
+
+                    <div>
+                        <strong>AI</strong>
+                        <p>Interview Coach</p>
+                    </div>
+
+                </div>
+
+                <div class="mini-feature">
+
+                    <span>✓</span>
+
+                    <div>
+                        <strong>Smart Questions</strong>
+                        <p>Practice by job role and difficulty</p>
+                    </div>
+
+                </div>
+
+                <div class="mini-feature">
+
+                    <span>✓</span>
+
+                    <div>
+                        <strong>Performance Feedback</strong>
+                        <p>Identify strengths and improvement areas</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Features Section -->
+        <section class="features section" id="features">
+
+            <div class="section-heading">
+
+                <p class="tagline">POWERFUL FEATURES</p>
+
+                <h2>Everything You Need to Prepare</h2>
+
+                <p>
+                    One platform to practise, evaluate, and improve your
+                    interview skills.
+                </p>
+
+            </div>
+
+            <div class="feature-grid">
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">🤖</div>
+
+                    <h3>AI Mock Interviews</h3>
+
+                    <p>
+                        Practise interview questions based on your selected
+                        job role and difficulty level.
+                    </p>
+
+                </article>
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">📄</div>
+
+                    <h3>Resume Analysis</h3>
+
+                    <p>
+                        Review your resume and identify relevant skills and
+                        areas to improve.
+                    </p>
+
+                </article>
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">🎙️</div>
+
+                    <h3>Voice Practice</h3>
+
+                    <p>
+                        Practise spoken answers and explore communication
+                        feedback as voice features are enabled.
+                    </p>
+
+                </article>
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">📊</div>
+
+                    <h3>Performance Reports</h3>
+
+                    <p>
+                        Review answer scores, strengths, and improvement
+                        suggestions after your practice sessions.
+                    </p>
+
+                </article>
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">🎯</div>
+
+                    <h3>Personalized Practice</h3>
+
+                    <p>
+                        Focus your preparation on the skills and topics
+                        you need to develop.
+                    </p>
+
+                </article>
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">📈</div>
+
+                    <h3>Progress Tracking</h3>
+
+                    <p>
+                        Review your interview history and monitor your
+                        progress over time.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works section" id="how-it-works">
+
+            <div class="section-heading">
+
+                <p class="tagline">SIMPLE PROCESS</p>
+
+                <h2>How InterviewGen AI Works</h2>
+
+                <p>
+                    Follow three simple steps to begin your interview
+                    preparation journey.
+                </p>
+
+            </div>
+
+            <div class="steps-grid">
+
+                <article class="step-card">
+
+                    <span>01</span>
+
+                    <h3>Set Your Goal</h3>
+
+                    <p>
+                        Select your job role, interview type, and
+                        preferred difficulty level.
+                    </p>
+
+                </article>
+
+                <article class="step-card">
+
+                    <span>02</span>
+
+                    <h3>Practise Answers</h3>
+
+                    <p>
+                        Answer interview questions and practise explaining
+                        your knowledge clearly.
+                    </p>
+
+                </article>
+
+                <article class="step-card">
+
+                    <span>03</span>
+
+                    <h3>Review Feedback</h3>
+
+                    <p>
+                        Understand your performance and identify areas
+                        for further practice.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="cta-section">
+
+            <h2>Your Next Interview Starts With Practice.</h2>
+
+            <p>
+                Build confidence one question at a time with InterviewGen AI.
+            </p>
+
+            <a href="{{ url_for('interview_setup') }}"
+               class="primary-button">
+                Get Started →
+            </a>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+
+        <a href="/" class="logo">
+            InterviewGen <span>AI</span>
+        </a>
+
+        <p>
+            AI-Based Mock Interview &amp; Performance Analyzer
+        </p>
+
+        <p class="copyright">
+            © 2026 InterviewGen AI · Academic Project Prototype
+        </p>
+
+    </footer>
+
+</body>
+
+</html>

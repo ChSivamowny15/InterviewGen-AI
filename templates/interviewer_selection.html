@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Interviewer | InterviewGen AI</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0b1020;
+            color: white;
+            padding: 40px 6%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            color: #aab4ce;
+            line-height: 1.6;
+        }
+
+        .interviewer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 24px;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .card {
+            background: #151d33;
+            border: 2px solid #293653;
+            border-radius: 18px;
+            padding: 25px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-7px);
+            border-color: #7c6cff;
+        }
+
+        .avatar {
+            width: 105px;
+            height: 105px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #615cff, #bd63ed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            font-weight: bold;
+        }
+
+        .card h2 {
+            margin-bottom: 8px;
+        }
+
+        .role {
+            color: #9ca9c7;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            color: #c3cbe0;
+            font-size: 14px;
+            line-height: 1.6;
+            min-height: 65px;
+        }
+
+        .select-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            border: none;
+            border-radius: 9px;
+            background: #7165f5;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .select-btn:hover {
+            background: #8a80ff;
+        }
+
+        .note {
+            text-align: center;
+            margin-top: 35px;
+            color: #9ca9c7;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Choose Your AI Interviewer</h1>
+        <p>Select an interviewer based on the type of interview you want to practise.</p>
+    </div>
+
+    <div class="interviewer-grid">
+
+        <div class="card">
+            <div class="avatar">R</div>
+            <h2>Rahul</h2>
+            <p class="role">Technical Interviewer</p>
+            <p class="description">
+                Focuses on programming, problem-solving,
+                data structures and technical concepts.
+            </p>
+            <button class="select-btn"
+                onclick="selectInterviewer('Rahul')">
+                Select Rahul
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="avatar">P</div>
+            <h2>Priya</h2>
+            <p class="role">HR Interviewer</p>
+            <p class="description">
+                Focuses on communication, introduction,
+                strengths, weaknesses and HR questions.
+            </p>
+            <button class="select-btn"
+                onclick="selectInterviewer('Priya')">
+                Select Priya
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="avatar">A</div>
+            <h2>Arjun</h2>
+            <p class="role">Senior Interviewer</p>
+            <p class="description">
+                Conducts challenging technical interviews
+                and evaluates problem-solving approaches.
+            </p>
+            <button class="select-btn"
+                onclick="selectInterviewer('Arjun')">
+                Select Arjun
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="avatar">M</div>
+            <h2>Meera</h2>
+            <p class="role">AI/ML Interviewer</p>
+            <p class="description">
+                Focuses on artificial intelligence,
+                machine learning and data science.
+            </p>
+            <button class="select-btn"
+                onclick="selectInterviewer('Meera')">
+                Select Meera
+            </button>
+        </div>
+
+    </div>
+
+    <p class="note">
+        These are fictional AI interviewer profiles.
+        The interview will be conducted by an AI system.
+    </p>
+
+    <script>
+        function selectInterviewer(name) {
+            window.location.href =
+                "/interview-setup?interviewer=" +
+                encodeURIComponent(name);
+        }
+    </script>
+
+</body>
+</html>

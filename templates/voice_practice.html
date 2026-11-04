@@ -1,0 +1,1348 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Practice | InterviewGen AI</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            position: relative;
+            isolation: isolate;
+            overflow-x: hidden;
+            background: #080d1d;
+            color: #edf0ff;
+        }
+
+        button, textarea {
+            font: inherit;
+        }
+
+        /* ANIMATED VOICE BACKGROUND */
+
+        .voice-background {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 15% 35%, rgba(91, 75, 190, 0.20), transparent 40%),
+                radial-gradient(ellipse at 85% 65%, rgba(0, 180, 255, 0.13), transparent 42%),
+                #080d1d;
+        }
+
+        .voice-background canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .voice-glow {
+            position: absolute;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.20;
+            animation: floatGlow 12s ease-in-out infinite alternate;
+        }
+
+        .glow-one {
+            background: #744cff;
+            top: 5%;
+            left: -180px;
+        }
+
+        .glow-two {
+            background: #00c8ff;
+            bottom: 0;
+            right: -180px;
+            animation-delay: -5s;
+        }
+
+        @keyframes floatGlow {
+            from {
+                transform: translate(0, 0) scale(0.9);
+            }
+            to {
+                transform: translate(100px, 70px) scale(1.2);
+            }
+        }
+
+        /* HEADER */
+
+        .header {
+            height: 76px;
+            padding: 0 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(13, 19, 39, 0.88);
+            border-bottom: 1px solid rgba(150, 145, 255, 0.16);
+            backdrop-filter: blur(16px);
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #8267ff, #397ce8);
+            font-size: 21px;
+            box-shadow: 0 0 22px rgba(120, 100, 255, 0.35);
+        }
+
+        .brand h2 {
+            font-size: 19px;
+            letter-spacing: 0.3px;
+        }
+
+        .brand span {
+            color: #a99aff;
+        }
+
+        .header a {
+            color: #e5e5ff;
+            text-decoration: none;
+            padding: 10px 17px;
+            border: 1px solid rgba(167, 153, 255, 0.3);
+            border-radius: 9px;
+            transition: 0.3s;
+        }
+
+        .header a:hover {
+            background: rgba(126, 103, 255, 0.17);
+            border-color: #9582ff;
+        }
+
+        /* MAIN CONTAINER */
+
+        .container {
+            max-width: 1120px;
+            margin: 42px auto;
+            padding: 0 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .intro {
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            color: #a99aff;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .intro h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .intro h1 span {
+            color: #a99aff;
+            text-shadow: 0 0 25px rgba(169, 154, 255, 0.3);
+        }
+
+        .intro p {
+            color: #a5aec7;
+            line-height: 1.7;
+            max-width: 680px;
+        }
+
+        /* COMMON PANEL */
+
+        .panel {
+            background: linear-gradient(
+                145deg,
+                rgba(27, 36, 67, 0.88),
+                rgba(17, 25, 49, 0.90)
+            );
+            border: 1px solid rgba(148, 139, 255, 0.20);
+            border-radius: 19px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.20);
+            backdrop-filter: blur(14px);
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .panel:hover {
+            border-color: rgba(148, 139, 255, 0.38);
+        }
+
+        .panel-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .panel-heading h2 {
+            font-size: 19px;
+        }
+
+        .panel-label {
+            color: #9f91ff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-bottom: 7px;
+        }
+
+        /* QUESTION */
+
+        .question {
+            padding: 20px;
+            background: rgba(125, 105, 255, 0.09);
+            border: 1px solid rgba(151, 134, 255, 0.23);
+            border-radius: 13px;
+            color: #e5e3ff;
+            font-size: 17px;
+            line-height: 1.8;
+        }
+
+        .question-number {
+            display: inline-block;
+            color: #b8aaff;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        /* VOICE STUDIO */
+
+        .studio {
+            text-align: center;
+            padding: 40px 20px 32px;
+            background:
+                radial-gradient(circle at center, rgba(108, 89, 235, 0.18), transparent 55%),
+                rgba(12, 19, 42, 0.68);
+            border: 1px solid rgba(143, 129, 255, 0.23);
+            border-radius: 17px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .studio::before {
+            content: "";
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: rgba(89, 112, 255, 0.08);
+            filter: blur(60px);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .studio > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .studio-label {
+            color: #a99aff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+
+        .mic-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0 22px;
+            min-height: 155px;
+        }
+
+        .mic-rings {
+            width: 135px;
+            height: 135px;
+            position: relative;
+            display: grid;
+            place-items: center;
+        }
+
+        .mic-ring {
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(142, 124, 255, 0.35);
+            border-radius: 50%;
+            animation: ringPulse 3s ease-out infinite;
+        }
+
+        .mic-ring:nth-child(2) {
+            animation-delay: 1s;
+        }
+
+        .mic-ring:nth-child(3) {
+            animation-delay: 2s;
+        }
+
+        @keyframes ringPulse {
+            0% {
+                transform: scale(0.75);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.55);
+                opacity: 0;
+            }
+        }
+
+        .mic-circle {
+            width: 112px;
+            height: 112px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #7659ed, #3579dc);
+            border: 7px solid rgba(181, 164, 255, 0.13);
+            box-shadow:
+                0 0 0 12px rgba(126, 103, 255, 0.07),
+                0 0 40px rgba(111, 91, 255, 0.35);
+            font-size: 42px;
+            transition: 0.3s;
+            position: relative;
+            z-index: 2;
+        }
+
+        .mic-circle.recording {
+            animation: micPulse 1.5s infinite;
+            background: linear-gradient(145deg, #ed5684, #9d4ee9);
+        }
+
+        @keyframes micPulse {
+            0%, 100% {
+                box-shadow:
+                    0 0 0 10px rgba(237, 86, 132, 0.10),
+                    0 0 35px rgba(237, 86, 132, 0.30);
+            }
+            50% {
+                box-shadow:
+                    0 0 0 23px rgba(237, 86, 132, 0.04),
+                    0 0 55px rgba(237, 86, 132, 0.45);
+            }
+        }
+
+        /* WAVEFORM */
+
+        .waveform {
+            height: 55px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin: 20px auto;
+        }
+
+        .waveform span {
+            width: 5px;
+            height: 9px;
+            border-radius: 10px;
+            background: linear-gradient(#a895ff, #4f9aff);
+            opacity: 0.55;
+        }
+
+        .waveform.active span {
+            animation: wave 0.8s ease-in-out infinite alternate;
+            opacity: 1;
+        }
+
+        .waveform span:nth-child(2n) { animation-delay: 0.1s; }
+        .waveform span:nth-child(3n) { animation-delay: 0.25s; }
+        .waveform span:nth-child(4n) { animation-delay: 0.4s; }
+        .waveform span:nth-child(5n) { animation-delay: 0.15s; }
+
+        @keyframes wave {
+            from { height: 8px; }
+            to { height: 37px; }
+        }
+
+        .recording-status {
+            color: #aeb8d0;
+            font-size: 14px;
+            margin-bottom: 21px;
+            line-height: 1.6;
+        }
+
+        .recording-status.live {
+            color: #ff8bab;
+        }
+
+        /* BUTTONS */
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 13px 20px;
+            font-size: 14px;
+            font-weight: 650;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            filter: brightness(1.12);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .primary-btn {
+            color: white;
+            background: linear-gradient(135deg, #805ff3, #4c75e9);
+            box-shadow: 0 5px 18px rgba(104, 91, 238, 0.22);
+        }
+
+        .pause-btn {
+            color: white;
+            background: #35466d;
+        }
+
+        .stop-btn {
+            color: white;
+            background: linear-gradient(135deg, #e95078, #c83d66);
+        }
+
+        .secondary-btn {
+            color: #d9d5ff;
+            background: rgba(127, 108, 255, 0.13);
+            border: 1px solid rgba(151, 134, 255, 0.25);
+        }
+
+        /* TRANSCRIPT */
+
+        .transcript {
+            width: 100%;
+            min-height: 180px;
+            padding: 17px;
+            resize: vertical;
+            outline: none;
+            border-radius: 12px;
+            border: 1px solid rgba(143, 139, 199, 0.28);
+            background: rgba(8, 14, 32, 0.75);
+            color: #f0efff;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .transcript::placeholder {
+            color: #77829e;
+        }
+
+        .transcript:focus {
+            border-color: #9883ff;
+            box-shadow: 0 0 0 3px rgba(130, 103, 255, 0.10);
+        }
+
+        .helper-text {
+            color: #8490ad;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        /* METRICS */
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 22px 12px;
+            border-radius: 13px;
+            background: rgba(10, 18, 40, 0.65);
+            border: 1px solid rgba(145, 133, 255, 0.15);
+            transition: 0.3s;
+        }
+
+        .metric:hover {
+            transform: translateY(-4px);
+            border-color: rgba(145, 133, 255, 0.4);
+        }
+
+        .metric-icon {
+            font-size: 21px;
+            margin-bottom: 10px;
+        }
+
+        .metric h3 {
+            color: #b4a4ff;
+            font-size: 28px;
+            margin-bottom: 7px;
+        }
+
+        .metric p {
+            color: #9ca8c3;
+            font-size: 13px;
+        }
+
+        /* FEEDBACK */
+
+        .feedback {
+            color: #b4bfd6;
+            line-height: 1.9;
+        }
+
+        .feedback p {
+            margin-bottom: 10px;
+        }
+
+        .feedback strong {
+            color: #d8d0ff;
+        }
+
+        .feedback-placeholder {
+            color: #8490ad;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+            padding: 28px 15px;
+            color: #77839f;
+            font-size: 12px;
+            border-top: 1px solid rgba(145, 133, 255, 0.12);
+            margin-top: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 650px) {
+            .header {
+                padding: 0 18px;
+            }
+
+            .container {
+                margin-top: 28px;
+                padding: 0 15px;
+            }
+
+            .intro h1 {
+                font-size: 27px;
+            }
+
+            .metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .panel {
+                padding: 19px;
+            }
+
+            .mic-circle {
+                width: 95px;
+                height: 95px;
+                font-size: 35px;
+            }
+
+            .controls button {
+                flex: 1 1 130px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ANIMATED VOICE BACKGROUND -->
+
+<div class="voice-background" aria-hidden="true">
+    <canvas id="voiceCanvas"></canvas>
+    <div class="voice-glow glow-one"></div>
+    <div class="voice-glow glow-two"></div>
+</div>
+
+<!-- HEADER -->
+
+<header class="header">
+    <div class="brand">
+        <div class="brand-icon">✦</div>
+        <h2>InterviewGen <span>AI</span></h2>
+    </div>
+
+    <a href="{{ url_for('dashboard') }}">← Dashboard</a>
+</header>
+
+<main class="container">
+
+    <!-- INTRODUCTION -->
+
+    <section class="intro">
+        <p class="eyebrow">AI COMMUNICATION TRAINING</p>
+        <h1>Voice <span>Practice Studio</span></h1>
+        <p>
+            Practise answering interview questions aloud, improve your
+            speaking confidence and understand your communication habits.
+        </p>
+    </section>
+
+    <!-- INTERVIEW QUESTION -->
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="panel-label">YOUR PRACTICE SESSION</p>
+                <h2>Interview Question</h2>
+            </div>
+        </div>
+
+        <div class="question">
+            <span class="question-number" id="questionNumber">QUESTION 01</span>
+            <div id="question">
+                Tell me about yourself and explain your technical skills,
+                academic background and career goals.
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="secondary-btn" onclick="nextQuestion()">
+                Next Question →
+            </button>
+        </div>
+    </section>
+
+    <!-- VOICE RECORDING STUDIO -->
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="panel-label">LIVE SPEECH SESSION</p>
+                <h2>Voice Recording Studio</h2>
+            </div>
+        </div>
+
+        <div class="studio">
+
+            <p class="studio-label">MICROPHONE CONTROL</p>
+
+            <div class="mic-area">
+                <div class="mic-rings">
+                    <div class="mic-ring"></div>
+                    <div class="mic-ring"></div>
+                    <div class="mic-ring"></div>
+                    <div class="mic-circle" id="micCircle">🎙️</div>
+                </div>
+            </div>
+
+            <div class="waveform" id="waveform">
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span>
+            </div>
+
+            <p class="recording-status" id="status">
+                Ready to practise. Click Start Recording when you are ready.
+            </p>
+
+            <div class="controls">
+                <button class="primary-btn" id="startBtn"
+                        onclick="startRecording()">
+                    🎙 Start Recording
+                </button>
+
+                <button class="pause-btn" id="pauseBtn"
+                        onclick="pauseRecording()" disabled>
+                    ⏸ Pause
+                </button>
+
+                <button class="stop-btn" id="stopBtn"
+                        onclick="stopRecording()" disabled>
+                    ⏹ Stop
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- TRANSCRIPT -->
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="panel-label">SPEECH-TO-TEXT</p>
+                <h2>Your Answer</h2>
+            </div>
+        </div>
+
+        <textarea
+            id="transcript"
+            class="transcript"
+            placeholder="Your spoken answer will appear here while you speak. You can also type or edit your answer..."
+        ></textarea>
+
+        <p class="helper-text">
+            Your transcript is editable. Review it before analysing your speech.
+        </p>
+
+        <div class="controls">
+            <button class="primary-btn" onclick="analyseSpeech()">
+                ✦ Analyse My Speech
+            </button>
+
+            <button class="secondary-btn" onclick="clearTranscript()">
+                Clear Answer
+            </button>
+        </div>
+    </section>
+
+    <!-- SPEAKING STATISTICS -->
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="panel-label">SESSION INSIGHTS</p>
+                <h2>Speaking Statistics</h2>
+            </div>
+        </div>
+
+        <div class="metrics">
+
+            <div class="metric">
+                <div class="metric-icon">⏱️</div>
+                <h3 id="duration">0s</h3>
+                <p>Speaking Duration</p>
+            </div>
+
+            <div class="metric">
+                <div class="metric-icon">📝</div>
+                <h3 id="wordCount">0</h3>
+                <p>Total Words</p>
+            </div>
+
+            <div class="metric">
+                <div class="metric-icon">⚡</div>
+                <h3 id="wpm">0</h3>
+                <p>Words Per Minute</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- COMMUNICATION FEEDBACK -->
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="panel-label">PERSONAL SPEAKING INSIGHTS</p>
+                <h2>Communication Feedback</h2>
+            </div>
+        </div>
+
+        <div class="feedback" id="feedback">
+            <p class="feedback-placeholder">
+                Your speaking analysis will appear here after you finish
+                recording and select Analyse My Speech.
+            </p>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    © 2026 InterviewGen AI | Practice. Improve. Succeed.
+</footer>
+
+<script>
+    /* ==========================================
+       ANIMATED AUDIO WAVE BACKGROUND
+    ========================================== */
+
+    const canvas = document.getElementById("voiceCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let canvasWidth = 0;
+    let canvasHeight = 0;
+    let waveTime = 0;
+    let animationFrame;
+
+    function resizeVoiceCanvas() {
+        const ratio = Math.min(window.devicePixelRatio || 1, 2);
+
+        canvasWidth = window.innerWidth;
+        canvasHeight = window.innerHeight;
+
+        canvas.width = canvasWidth * ratio;
+        canvas.height = canvasHeight * ratio;
+
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    window.addEventListener("resize", resizeVoiceCanvas);
+    resizeVoiceCanvas();
+
+    function drawVoiceWaves() {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        const centerY = canvasHeight * 0.52;
+
+        const waves = [
+            {
+                amplitude: 24,
+                frequency: 0.009,
+                speed: 0.018,
+                color: "rgba(115, 91, 255, 0.32)"
+            },
+            {
+                amplitude: 38,
+                frequency: 0.006,
+                speed: 0.013,
+                color: "rgba(36, 153, 255, 0.24)"
+            },
+            {
+                amplitude: 16,
+                frequency: 0.014,
+                speed: 0.022,
+                color: "rgba(0, 220, 255, 0.25)"
+            },
+            {
+                amplitude: 52,
+                frequency: 0.004,
+                speed: 0.009,
+                color: "rgba(153, 104, 255, 0.16)"
+            }
+        ];
+
+        waves.forEach((wave, index) => {
+            ctx.beginPath();
+
+            for (let x = 0; x <= canvasWidth; x += 4) {
+                const envelope = Math.sin((x / canvasWidth) * Math.PI);
+
+                const y =
+                    centerY +
+                    Math.sin(
+                        x * wave.frequency +
+                        waveTime * wave.speed * 60 +
+                        index
+                    ) * wave.amplitude * envelope;
+
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.strokeStyle = wave.color;
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 14;
+            ctx.shadowColor = wave.color;
+            ctx.stroke();
+        });
+
+        ctx.shadowBlur = 0;
+
+        // Floating glowing particles
+
+        for (let i = 0; i < 24; i++) {
+            const x = (i * 137 + waveTime * 12) % canvasWidth;
+
+            const y =
+                centerY +
+                Math.sin(i * 2 + waveTime * 0.7) * 100;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y,
+                1.5 + Math.sin(waveTime + i) * 0.7,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle = "rgba(132, 160, 255, 0.65)";
+            ctx.fill();
+        }
+
+        waveTime += 0.025;
+
+        animationFrame = requestAnimationFrame(drawVoiceWaves);
+    }
+
+    if (
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+        drawVoiceWaves();
+    }
+
+    /* ==========================================
+       SPEECH RECOGNITION
+    ========================================== */
+
+    const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    let recognition = null;
+    let isRecording = false;
+    let isPaused = false;
+    let recognitionRunning = false;
+
+    let startTime = 0;
+    let elapsedSeconds = 0;
+    let timerInterval = null;
+    let finalTranscript = "";
+
+    const transcriptBox = document.getElementById("transcript");
+    const statusText = document.getElementById("status");
+    const startBtn = document.getElementById("startBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const micCircle = document.getElementById("micCircle");
+    const waveform = document.getElementById("waveform");
+
+    const questions = [
+        "Tell me about yourself and explain your technical skills, academic background and career goals.",
+        "What are your strengths and weaknesses?",
+        "Explain one technical project you have completed and your contribution to it.",
+        "Why should we hire you?",
+        "Describe a challenging situation and how you handled it.",
+        "Where do you see yourself in the next five years?",
+        "How do you handle pressure and deadlines?"
+    ];
+
+    let currentQuestion = 0;
+
+    /* INITIALISE SPEECH RECOGNITION */
+
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+
+        recognition.lang = "en-IN";
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.onstart = function() {
+            recognitionRunning = true;
+        };
+
+        recognition.onresult = function(event) {
+            let interimTranscript = "";
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const spokenText = event.results[i][0].transcript;
+
+                if (event.results[i].isFinal) {
+                    finalTranscript += spokenText + " ";
+                } else {
+                    interimTranscript += spokenText;
+                }
+            }
+
+            transcriptBox.value =
+                finalTranscript + interimTranscript;
+
+            transcriptBox.scrollTop = transcriptBox.scrollHeight;
+        };
+
+        recognition.onerror = function(event) {
+            statusText.textContent =
+                "Microphone message: " + event.error +
+                ". Check your browser microphone permission.";
+
+            if (
+                event.error === "not-allowed" ||
+                event.error === "service-not-allowed"
+            ) {
+                finishRecording();
+            }
+        };
+
+        recognition.onend = function() {
+            recognitionRunning = false;
+
+            if (isRecording && !isPaused) {
+                try {
+                    recognition.start();
+                } catch (error) {
+                    console.log("Recognition restart:", error);
+                }
+            }
+        };
+
+    } else {
+        statusText.textContent =
+            "Speech recognition is not supported. Please use Google Chrome.";
+    }
+
+    /* ==========================================
+       START RECORDING
+    ========================================== */
+
+    function startRecording() {
+        if (!recognition) {
+            alert(
+                "Speech recognition is not supported. Please use Google Chrome."
+            );
+            return;
+        }
+
+        if (isRecording && isPaused) {
+            resumeRecording();
+            return;
+        }
+
+        if (isRecording) return;
+
+        isRecording = true;
+        isPaused = false;
+
+        startTime = Date.now() - elapsedSeconds * 1000;
+
+        startBtn.disabled = true;
+        pauseBtn.disabled = false;
+        stopBtn.disabled = false;
+
+        micCircle.classList.add("recording");
+        waveform.classList.add("active");
+
+        statusText.textContent =
+            "Listening... Speak clearly and confidently.";
+
+        statusText.classList.add("live");
+
+        try {
+            recognition.start();
+        } catch (error) {
+            console.log(error);
+
+            statusText.textContent =
+                "Unable to start recording. Please try again.";
+
+            finishRecording();
+            return;
+        }
+
+        clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    /* ==========================================
+       PAUSE RECORDING
+    ========================================== */
+
+    function pauseRecording() {
+        if (!isRecording || isPaused) return;
+
+        isPaused = true;
+
+        if (recognition && recognitionRunning) {
+            recognition.stop();
+        }
+
+        clearInterval(timerInterval);
+
+        elapsedSeconds = Math.floor(
+            (Date.now() - startTime) / 1000
+        );
+
+        pauseBtn.textContent = "▶ Resume";
+
+        statusText.textContent =
+            "Recording paused. Resume when ready.";
+
+        statusText.classList.remove("live");
+
+        micCircle.classList.remove("recording");
+        waveform.classList.remove("active");
+
+        updateTimer();
+    }
+
+    /* ==========================================
+       RESUME RECORDING
+    ========================================== */
+
+    function resumeRecording() {
+        if (!isRecording || !isPaused) return;
+
+        isPaused = false;
+
+        startTime = Date.now() - elapsedSeconds * 1000;
+
+        pauseBtn.textContent = "⏸ Pause";
+
+        statusText.textContent =
+            "Listening... Continue your answer.";
+
+        statusText.classList.add("live");
+
+        micCircle.classList.add("recording");
+        waveform.classList.add("active");
+
+        try {
+            recognition.start();
+        } catch (error) {
+            console.log(error);
+        }
+
+        clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    /* ==========================================
+       STOP RECORDING
+    ========================================== */
+
+    function stopRecording() {
+        if (!isRecording) return;
+
+        if (!isPaused) {
+            elapsedSeconds = Math.floor(
+                (Date.now() - startTime) / 1000
+            );
+        }
+
+        finishRecording();
+
+        statusText.textContent =
+            "Recording completed. Analyse your answer to view feedback.";
+
+        updateTimer();
+    }
+
+    function finishRecording() {
+        isRecording = false;
+        isPaused = false;
+
+        if (recognition && recognitionRunning) {
+            recognition.stop();
+        }
+
+        clearInterval(timerInterval);
+
+        startBtn.disabled = false;
+        pauseBtn.disabled = true;
+        stopBtn.disabled = true;
+
+        pauseBtn.textContent = "⏸ Pause";
+
+        micCircle.classList.remove("recording");
+        waveform.classList.remove("active");
+
+        statusText.classList.remove("live");
+    }
+
+    /* ==========================================
+       TIMER
+    ========================================== */
+
+    function updateTimer() {
+        document.getElementById("duration").textContent =
+            elapsedSeconds + "s";
+    }
+
+    /* ==========================================
+       SPEECH ANALYSIS
+    ========================================== */
+
+    function analyseSpeech() {
+        if (isRecording) {
+            alert("Please stop recording before analysing your answer.");
+            return;
+        }
+
+        const text = transcriptBox.value.trim();
+
+        if (!text) {
+            alert("Please record or enter your answer first.");
+            return;
+        }
+
+        const words = text.split(/\s+/).filter(Boolean);
+        const count = words.length;
+
+        const minutes = elapsedSeconds / 60;
+
+        const speed = minutes > 0
+            ? Math.round(count / minutes)
+            : 0;
+
+        const fillerWords = [
+            "um",
+            "uh",
+            "actually",
+            "basically",
+            "like",
+            "you know",
+            "sort of"
+        ];
+
+        const lowerText = text.toLowerCase();
+
+        let fillerCount = 0;
+
+        fillerWords.forEach(word => {
+            const escaped = word.replace(
+                /[.*+?^${}()|[\]\\]/g,
+                "\\$&"
+            );
+
+            const regex = new RegExp(
+                "\\b" + escaped + "\\b",
+                "g"
+            );
+
+            const matches = lowerText.match(regex);
+
+            fillerCount += matches ? matches.length : 0;
+        });
+
+        document.getElementById("wordCount").textContent = count;
+        document.getElementById("wpm").textContent = speed;
+
+        let speedFeedback = "";
+
+        if (speed === 0) {
+            speedFeedback =
+                "Speaking speed cannot be calculated because no recording duration was captured.";
+        } else if (speed < 100) {
+            speedFeedback =
+                "Your speaking pace is slow. Try to maintain a natural conversational pace.";
+        } else if (speed <= 160) {
+            speedFeedback =
+                "Your speaking pace is within a commonly comfortable practice range.";
+        } else {
+            speedFeedback =
+                "Your speaking pace is fast. Try slowing down and pronouncing words clearly.";
+        }
+
+        let fillerFeedback = fillerCount === 0
+            ? "No common filler words were detected in your transcript."
+            : fillerCount +
+              " possible filler words were detected. Practise using short pauses instead.";
+
+        let structureFeedback = count < 30
+            ? "Your answer is quite short. Try adding more details and examples."
+            : "Good attempt! Continue organising your answer with an introduction, main points and a conclusion.";
+
+        document.getElementById("feedback").innerHTML = `
+            <p><strong>Speaking pace:</strong> ${speedFeedback}</p>
+            <p><strong>Filler words:</strong> ${fillerFeedback}</p>
+            <p><strong>Total words:</strong> ${count}</p>
+            <p><strong>Answer structure:</strong> ${structureFeedback}</p>
+            <p><strong>Practice tip:</strong> Use the STAR method for experience-based
+            questions: Situation, Task, Action and Result. For technical questions,
+            explain the concept and give a practical example.</p>
+            <p><strong>Next step:</strong> Practise the same answer again and compare
+            your speaking pace and clarity.</p>
+        `;
+    }
+
+    /* ==========================================
+       CLEAR ANSWER
+    ========================================== */
+
+    function clearTranscript() {
+        if (isRecording) {
+            stopRecording();
+        }
+
+        transcriptBox.value = "";
+        finalTranscript = "";
+        elapsedSeconds = 0;
+
+        document.getElementById("duration").textContent = "0s";
+        document.getElementById("wordCount").textContent = "0";
+        document.getElementById("wpm").textContent = "0";
+
+        document.getElementById("feedback").innerHTML =
+            '<p class="feedback-placeholder">Your speaking analysis will appear here after you finish recording.</p>';
+
+        statusText.textContent =
+            "Ready to practise. Click Start Recording when you are ready.";
+
+        statusText.classList.remove("live");
+    }
+
+    /* ==========================================
+       NEXT QUESTION
+    ========================================== */
+
+    function nextQuestion() {
+        if (isRecording) {
+            stopRecording();
+        }
+
+        currentQuestion =
+            (currentQuestion + 1) % questions.length;
+
+        document.getElementById("question").textContent =
+            questions[currentQuestion];
+
+        document.getElementById("questionNumber").textContent =
+            "QUESTION " +
+            String(currentQuestion + 1).padStart(2, "0");
+
+        clearTranscript();
+    }
+</script>
+
+</body>
+</html>

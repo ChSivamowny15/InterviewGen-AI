@@ -1,0 +1,603 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Setup | InterviewGen AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        body.ig-setup-page {
+            margin: 0;
+            min-height: 100vh;
+            background: #0b1020;
+            color: #f4f5ff;
+            font-family: Inter, Arial, sans-serif;
+        }
+
+        .ig-setup-page *,
+        .ig-setup-page *::before,
+        .ig-setup-page *::after {
+            box-sizing: border-box;
+        }
+
+        .ig-setup-page .ig-navbar {
+            width: 100%;
+            min-height: 70px;
+            padding: 0 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #252d43;
+            background: #0e1426;
+        }
+
+        .ig-setup-page .ig-brand {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 21px;
+            font-weight: 750;
+        }
+
+        .ig-setup-page .ig-brand-icon {
+            color: #9b8cff;
+            margin-right: 7px;
+        }
+
+        .ig-setup-page .ig-brand-ai {
+            color: #a493ff;
+        }
+
+        .ig-setup-page .ig-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .ig-setup-page .ig-nav-links a {
+            color: #b9c2d8;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .ig-setup-page .ig-nav-links a:hover {
+            color: #ffffff;
+        }
+
+        .ig-setup-page .ig-nav-links .ig-nav-cta {
+            padding: 10px 17px;
+            border-radius: 9px;
+            color: #ffffff;
+            background: #7059e8;
+        }
+
+        .ig-setup-page .ig-setup-wrapper {
+            width: min(100% - 36px, 1050px);
+            margin: 0 auto;
+            padding: 48px 0 65px;
+        }
+
+        .ig-setup-page .ig-setup-intro {
+            max-width: 680px;
+            margin: 0 auto 32px;
+            text-align: center;
+        }
+
+        .ig-setup-page .ig-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 15px;
+            color: #a99aff;
+            font-size: 11px;
+            font-weight: 750;
+            letter-spacing: 2px;
+        }
+
+        .ig-setup-page .ig-live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #8d7aff;
+            box-shadow: 0 0 10px #8d7aff;
+        }
+
+        .ig-setup-page .ig-setup-intro h1 {
+            margin: 0;
+            color: #ffffff;
+            font-size: clamp(30px, 5vw, 43px);
+            line-height: 1.2;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+        }
+
+        .ig-setup-page .ig-setup-intro h1 span {
+            color: #a493ff;
+        }
+
+        .ig-setup-page .ig-setup-intro p {
+            max-width: 570px;
+            margin: 14px auto 0;
+            color: #aab5ce;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .ig-setup-page .ig-setup-card {
+            width: 100%;
+            max-width: 690px;
+            margin: 0 auto;
+            padding: 34px 38px;
+            border: 1px solid #29344e;
+            border-radius: 18px;
+            background: #151e33;
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.22);
+        }
+
+        .ig-setup-page .ig-card-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .ig-setup-page .ig-step-label {
+            color: #a493ff;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.8px;
+        }
+
+        .ig-setup-page .ig-card-heading h2 {
+            margin: 9px 0 5px;
+            color: #ffffff;
+            font-size: 25px;
+            letter-spacing: -0.5px;
+        }
+
+        .ig-setup-page .ig-card-heading p {
+            margin: 0;
+            color: #9eabc5;
+            font-size: 14px;
+        }
+
+        .ig-setup-page .ig-card-icon {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border: 1px solid #51458a;
+            border-radius: 14px;
+            background: #292347;
+            font-size: 23px;
+        }
+
+        .ig-setup-page .ig-progress {
+            display: flex;
+            gap: 7px;
+            margin-bottom: 27px;
+        }
+
+        .ig-setup-page .ig-progress span {
+            height: 4px;
+            flex: 1;
+            border-radius: 10px;
+            background: #343e57;
+        }
+
+        .ig-setup-page .ig-progress span:first-child {
+            background: #927cff;
+        }
+
+        /* Selected interviewer */
+
+        .ig-setup-page .ig-interviewer-box {
+            display: flex;
+            align-items: center;
+            gap: 17px;
+            padding: 19px;
+            margin-bottom: 28px;
+            border: 1px solid #51458a;
+            border-radius: 13px;
+            background: linear-gradient(
+                120deg,
+                rgba(112, 89, 232, 0.16),
+                rgba(21, 30, 51, 0.8)
+            );
+        }
+
+        .ig-setup-page .ig-interviewer-avatar {
+            width: 65px;
+            height: 65px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7059e8, #b16cf5);
+            color: white;
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        .ig-setup-page .ig-interviewer-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .ig-setup-page .ig-interviewer-label {
+            color: #a493ff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        .ig-setup-page .ig-interviewer-info h3 {
+            margin: 6px 0;
+            color: white;
+            font-size: 19px;
+        }
+
+        .ig-setup-page .ig-interviewer-info p {
+            margin: 0;
+            color: #aab5ce;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .ig-setup-page .ig-change-button {
+            padding: 9px 13px;
+            border: 1px solid #7765d5;
+            border-radius: 8px;
+            background: transparent;
+            color: #c3b8ff;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .ig-setup-page .ig-change-button:hover {
+            background: #292347;
+            color: white;
+        }
+
+        .ig-setup-page .ig-form-group {
+            margin-bottom: 23px;
+        }
+
+        .ig-setup-page .ig-form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #f2f3ff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .ig-setup-page .ig-field-help {
+            margin: 0 0 10px;
+            color: #9eabc5;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .ig-setup-page .ig-setup-form select {
+            display: block;
+            width: 100%;
+            min-width: 0;
+            height: 49px;
+            padding: 0 15px;
+            border: 1px solid #394660;
+            border-radius: 9px;
+            outline: none;
+            background: #0e1629;
+            color: #f4f5ff;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .ig-setup-page .ig-setup-form select:focus {
+            border-color: #927cff;
+            box-shadow: 0 0 0 3px rgba(146, 124, 255, 0.14);
+        }
+
+        .ig-setup-page .ig-setup-form select option {
+            background: #151e33;
+            color: #ffffff;
+        }
+
+        .ig-setup-page .ig-start-button {
+            width: 100%;
+            min-height: 51px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(110deg, #7259e9, #9278ff);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 750;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .ig-setup-page .ig-start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(114, 89, 233, 0.28);
+        }
+
+        .ig-setup-page .ig-start-button span {
+            font-size: 20px;
+        }
+
+        .ig-setup-page .ig-privacy-note {
+            margin: 14px 0 0;
+            color: #8794ae;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .ig-setup-page .ig-footer {
+            padding: 22px 18px;
+            border-top: 1px solid #252d43;
+            background: #0e1426;
+            text-align: center;
+        }
+
+        .ig-setup-page .ig-footer p {
+            margin: 7px 0 0;
+            color: #8995ad;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .ig-setup-page .ig-navbar {
+                min-height: 62px;
+                padding: 0 18px;
+            }
+
+            .ig-setup-page .ig-nav-links {
+                gap: 12px;
+            }
+
+            .ig-setup-page .ig-nav-links a {
+                font-size: 12px;
+            }
+
+            .ig-setup-page .ig-nav-links a:nth-child(2) {
+                display: none;
+            }
+
+            .ig-setup-page .ig-setup-wrapper {
+                width: calc(100% - 28px);
+                padding: 35px 0 45px;
+            }
+
+            .ig-setup-page .ig-setup-intro {
+                margin-bottom: 25px;
+            }
+
+            .ig-setup-page .ig-setup-card {
+                padding: 25px 19px;
+            }
+
+            .ig-setup-page .ig-card-heading h2 {
+                font-size: 22px;
+            }
+
+            .ig-setup-page .ig-interviewer-box {
+                flex-wrap: wrap;
+            }
+
+            .ig-setup-page .ig-change-button {
+                margin-left: 82px;
+            }
+        }
+    </style>
+</head>
+
+<body class="ig-setup-page">
+
+    <header class="ig-navbar">
+        <a href="/" class="ig-brand">
+            <span class="ig-brand-icon">✦</span>
+            InterviewGen <span class="ig-brand-ai">AI</span>
+        </a>
+
+        <nav class="ig-nav-links">
+            <a href="/">Home</a>
+            <a href="#setup-form" class="ig-nav-cta">Start practising ↗</a>
+        </nav>
+    </header>
+
+    <main class="ig-setup-wrapper">
+
+        <section class="ig-setup-intro">
+            <div class="ig-eyebrow">
+                <span class="ig-live-dot"></span>
+                YOUR PERSONAL INTERVIEW COACH
+            </div>
+
+            <h1>
+                Prepare smarter.<br>
+                <span>Interview better.</span>
+            </h1>
+
+            <p>
+                Configure your interview and meet your selected AI interviewer.
+            </p>
+        </section>
+
+        <section class="ig-setup-card" id="setup-form">
+
+            <div class="ig-card-heading">
+                <div>
+                    <span class="ig-step-label">INTERVIEW CONFIGURATION</span>
+                    <h2>Set up your interview</h2>
+                    <p>Choose your preferences to get started.</p>
+                </div>
+
+                <div class="ig-card-icon">🎯</div>
+            </div>
+
+            <div class="ig-progress">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <!-- Selected AI Interviewer -->
+
+            {% set interviewer_profiles = {
+                "Rahul": {
+                    "initial": "R",
+                    "role": "Technical Interviewer",
+                    "description": "Focuses on programming, problem-solving and technical concepts."
+                },
+                "Priya": {
+                    "initial": "P",
+                    "role": "HR Interviewer",
+                    "description": "Focuses on communication, strengths, weaknesses and HR questions."
+                },
+                "Arjun": {
+                    "initial": "A",
+                    "role": "Senior Technical Interviewer",
+                    "description": "Conducts challenging technical interviews and evaluates problem-solving."
+                },
+                "Meera": {
+                    "initial": "M",
+                    "role": "AI/ML Interviewer",
+                    "description": "Focuses on artificial intelligence, machine learning and data science."
+                }
+            } %}
+
+            {% set current_interviewer = interviewer_profiles.get(selected_interviewer, interviewer_profiles["Rahul"]) %}
+
+            <div class="ig-interviewer-box">
+
+                <div class="ig-interviewer-avatar">
+                    {{ current_interviewer.initial }}
+                </div>
+
+                <div class="ig-interviewer-info">
+                    <span class="ig-interviewer-label">
+                        YOUR SELECTED AI INTERVIEWER
+                    </span>
+
+                    <h3>{{ selected_interviewer }}</h3>
+
+                    <p>
+                        {{ current_interviewer.role }} ·
+                        {{ current_interviewer.description }}
+                    </p>
+                </div>
+
+                <a href="{{ url_for('interviewer_selection') }}"
+                   class="ig-change-button">
+                    Change ↗
+                </a>
+
+            </div>
+
+            <form action="{{ url_for('start_interview') }}"
+                  method="POST"
+                  class="ig-setup-form">
+
+                <!-- Pass selected interviewer to Flask -->
+
+                <input
+                    type="hidden"
+                    name="interviewer"
+                    value="{{ selected_interviewer }}"
+                >
+
+                <div class="ig-form-group">
+                    <label for="role">01. Select your job role</label>
+
+                    <p class="ig-field-help">
+                        Which position are you preparing for?
+                    </p>
+
+                    <select id="role" name="role" required>
+                        <option value="" disabled selected>Select your job role</option>
+
+                        {% for role in roles %}
+                            <option value="{{ role }}">{{ role }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="ig-form-group">
+                    <label for="interview_type">02. Select interview type</label>
+
+                    <p class="ig-field-help">
+                        Choose the type of interview you want to practise.
+                    </p>
+
+                    <select id="interview_type" name="interview_type" required>
+                        <option value="" disabled selected>Select interview type</option>
+
+                        {% for interview_type in interview_types %}
+                            <option value="{{ interview_type }}">
+                                {{ interview_type }} interview
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="ig-form-group">
+                    <label for="difficulty">03. Select difficulty level</label>
+
+                    <p class="ig-field-help">
+                        Choose the level that matches your preparation.
+                    </p>
+
+                    <select id="difficulty" name="difficulty" required>
+                        <option value="" disabled selected>Select difficulty level</option>
+
+                        {% for difficulty in difficulties %}
+                            <option value="{{ difficulty }}">
+                                {% if difficulty == "Beginner" %}
+                                    Beginner — Build my basics
+                                {% elif difficulty == "Intermediate" %}
+                                    Intermediate — Improve my skills
+                                {% else %}
+                                    Advanced — Challenge me
+                                {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="ig-start-button">
+                    Start My Interview
+                    <span>→</span>
+                </button>
+
+                <p class="ig-privacy-note">
+                    Your questions will be ready shortly.
+                </p>
+
+            </form>
+        </section>
+
+    </main>
+
+    <footer class="ig-footer">
+        <a href="/" class="ig-brand">
+            InterviewGen <span class="ig-brand-ai">AI</span>
+        </a>
+
+        <p>InterviewGen AI · AI-powered interview practice</p>
+    </footer>
+
+</body>
+</html>

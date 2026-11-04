@@ -1,0 +1,604 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>InterviewGen AI | Analytics</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #10101c;
+            color: #f5f5fa;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 235px;
+            background: #171727;
+            padding: 28px 18px;
+            min-height: 100vh;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            color: #a78bfa;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 38px;
+        }
+
+        .nav-link {
+            display: block;
+            color: #b8b8ca;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 9px;
+            margin-bottom: 9px;
+            transition: 0.3s;
+        }
+
+        .nav-link.active,
+        .nav-link:hover {
+            background: #30264c;
+            color: #c4b5fd;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            padding: 35px;
+            min-width: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 29px;
+            margin-bottom: 8px;
+        }
+
+        .muted {
+            color: #9999ad;
+            font-size: 14px;
+        }
+
+        .back-link {
+            color: #c4b5fd;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+        }
+
+        /* Statistics Cards */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card,
+        .panel {
+            background: #1b1b2d;
+            border: 1px solid #303047;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .card h3 {
+            color: #aaaac0;
+            font-size: 14px;
+            font-weight: normal;
+            margin-bottom: 14px;
+        }
+
+        .card .number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #c4b5fd;
+        }
+
+        /* Charts */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .panel h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            height: 280px;
+            position: relative;
+        }
+
+        /* Interview History */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 15px 12px;
+            border-bottom: 1px solid #303047;
+            font-size: 14px;
+        }
+
+        th {
+            color: #aaaac0;
+        }
+
+        td {
+            color: #e5e5ef;
+        }
+
+        .score {
+            color: #86efac;
+            font-weight: bold;
+        }
+
+        .empty {
+            color: #aaaac0;
+            text-align: center;
+            padding: 30px 10px;
+            line-height: 1.7;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 850px) {
+            .sidebar {
+                width: 180px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                display: block;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main {
+                padding: 20px;
+            }
+
+            .header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="brand">InterviewGen AI</div>
+
+        <a href="{{ url_for('dashboard') }}" class="nav-link">
+            🏠 Dashboard
+        </a>
+
+        <a href="{{ url_for('analytics') }}" class="nav-link active">
+            📊 Analytics
+        </a>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- Page Header -->
+        <div class="header">
+
+            <div>
+                <h1>Performance Analytics</h1>
+
+                <p class="muted">
+                    Track your interview progress and performance.
+                </p>
+            </div>
+
+            <a href="{{ url_for('dashboard') }}" class="back-link">
+                ← Back to Dashboard
+            </a>
+
+        </div>
+
+
+        <!-- Statistics -->
+        <section class="stats">
+
+            <div class="card">
+                <h3>Total Interviews</h3>
+
+                <div class="number">
+                    {{ total_interviews }}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Average Score</h3>
+
+                <div class="number">
+                    {{ average_score }}%
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Total Questions Attempted</h3>
+
+                <div class="number">
+                    {{ total_questions }}
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- Charts -->
+        <section class="content-grid">
+
+            <!-- Score Progress Chart -->
+            <div class="panel">
+
+                <h2>Score Progress</h2>
+
+                {% if score_history %}
+
+                    <div class="chart-container">
+                        <canvas id="scoreChart"></canvas>
+                    </div>
+
+                {% else %}
+
+                    <div class="empty">
+                        Complete your first interview to see your score progress.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Recent Interview Scores -->
+            <div class="panel">
+
+                <h2>Recent Interview Scores</h2>
+
+                {% if recent_interviews %}
+
+                    <div class="chart-container">
+                        <canvas id="recentChart"></canvas>
+                    </div>
+
+                {% else %}
+
+                    <div class="empty">
+                        Your interview scores will appear here after completing an interview.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- Interview History -->
+        <section class="panel">
+
+            <h2>Recent Interview History</h2>
+
+            {% if recent_interviews %}
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Role</th>
+                                <th>Interview Type</th>
+                                <th>Difficulty</th>
+                                <th>Questions</th>
+                                <th>Score</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for interview in recent_interviews %}
+
+                                <tr>
+                                    <td>{{ interview.role }}</td>
+
+                                    <td>{{ interview.interview_type }}</td>
+
+                                    <td>{{ interview.difficulty }}</td>
+
+                                    <td>{{ interview.total_questions }}</td>
+
+                                    <td class="score">
+                                        {{ interview.average_score }}%
+                                    </td>
+
+                                    <td>{{ interview.created_at }}</td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="empty">
+                    No interview records found yet.
+                    <br>
+                    Complete an interview to start tracking your progress.
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+
+    <!-- Flask Data: Safely separated from JavaScript -->
+    <script type="application/json" id="score-history-data">
+        {{ score_history | tojson }}
+    </script>
+
+    <script type="application/json" id="recent-interviews-data">
+        {{ recent_interviews | tojson }}
+    </script>
+
+
+    <!-- JavaScript and Charts -->
+    <script>
+
+        // Read data provided by Flask
+        const scoreHistory = JSON.parse(
+            document.getElementById("score-history-data").textContent
+        );
+
+        const recentInterviews = JSON.parse(
+            document.getElementById("recent-interviews-data").textContent
+        );
+
+
+        // Score Progress Chart
+        const scoreCanvas = document.getElementById("scoreChart");
+
+        if (scoreCanvas && scoreHistory.length > 0) {
+
+            new Chart(scoreCanvas, {
+
+                type: "line",
+
+                data: {
+
+                    labels: scoreHistory.map(item => item.date),
+
+                    datasets: [{
+
+                        label: "Average Score",
+
+                        data: scoreHistory.map(item => item.score),
+
+                        borderColor: "#a78bfa",
+
+                        backgroundColor: "rgba(167, 139, 250, 0.15)",
+
+                        fill: true,
+
+                        tension: 0.35,
+
+                        pointBackgroundColor: "#c4b5fd",
+
+                        pointRadius: 5
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            max: 100,
+
+                            ticks: {
+                                color: "#aaaac0"
+                            },
+
+                            grid: {
+                                color: "#303047"
+                            }
+
+                        },
+
+                        x: {
+
+                            ticks: {
+                                color: "#aaaac0"
+                            },
+
+                            grid: {
+                                color: "#303047"
+                            }
+
+                        }
+
+                    },
+
+                    plugins: {
+
+                        legend: {
+
+                            labels: {
+                                color: "#f5f5fa"
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+
+        // Recent Interview Scores Chart
+        const recentCanvas = document.getElementById("recentChart");
+
+        if (recentCanvas && recentInterviews.length > 0) {
+
+            new Chart(recentCanvas, {
+
+                type: "bar",
+
+                data: {
+
+                    labels: recentInterviews.map(
+                        (item, index) => "Interview " + (index + 1)
+                    ),
+
+                    datasets: [{
+
+                        label: "Interview Score",
+
+                        data: recentInterviews.map(
+                            item => item.average_score
+                        ),
+
+                        backgroundColor: "#8b5cf6",
+
+                        borderRadius: 6
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            max: 100,
+
+                            ticks: {
+                                color: "#aaaac0"
+                            },
+
+                            grid: {
+                                color: "#303047"
+                            }
+
+                        },
+
+                        x: {
+
+                            ticks: {
+                                color: "#aaaac0"
+                            },
+
+                            grid: {
+                                display: false
+                            }
+
+                        }
+
+                    },
+
+                    plugins: {
+
+                        legend: {
+
+                            labels: {
+                                color: "#f5f5fa"
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>

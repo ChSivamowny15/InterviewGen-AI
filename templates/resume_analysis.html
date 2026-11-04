@@ -1,0 +1,838 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis | InterviewGen AI</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f5f6fb;
+            color: #25263a;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            background: #17172b;
+            color: white;
+            padding: 30px 20px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 45px;
+        }
+
+        .logo span {
+            color: #9185ff;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c8c8d8;
+            text-decoration: none;
+            padding: 14px;
+            margin-bottom: 10px;
+            border-radius: 9px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #39365f;
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 35px;
+            max-width: 1250px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .top-heading {
+            margin-bottom: 30px;
+        }
+
+        .top-heading h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .top-heading p {
+            color: #77788b;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(20, 20, 50, 0.05);
+        }
+
+        .card h2 {
+            font-size: 21px;
+            margin-bottom: 12px;
+        }
+
+        .card-description {
+            color: #77788b;
+            margin-bottom: 22px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #dedfeb;
+            border-radius: 9px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .file-help {
+            font-size: 13px;
+            color: #77788b;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .primary-btn {
+            border: none;
+            background: #6257e8;
+            color: white;
+            padding: 14px 25px;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .primary-btn:hover {
+            background: #5045d0;
+        }
+
+        .primary-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 9px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .error {
+            background: #fff0f0;
+            color: #b42318;
+            border: 1px solid #ffd0d0;
+        }
+
+        .results-heading {
+            margin: 35px 0 20px;
+        }
+
+        .results-heading h2 {
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .results-heading p {
+            color: #77788b;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .score-card {
+            background: white;
+            padding: 23px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(20, 20, 50, 0.04);
+        }
+
+        .score-card p {
+            color: #77788b;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .score-card h3 {
+            font-size: 30px;
+            color: #6257e8;
+        }
+
+        .result-section {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 20px rgba(20, 20, 50, 0.04);
+        }
+
+        .result-section h3 {
+            margin-bottom: 18px;
+            font-size: 19px;
+        }
+
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill-tag {
+            padding: 9px 14px;
+            border-radius: 20px;
+            background: #eeecff;
+            color: #5045c9;
+            font-size: 13px;
+        }
+
+        .missing-tag {
+            background: #fff0ed;
+            color: #c44b37;
+        }
+
+        .section-tag {
+            background: #eaf8ef;
+            color: #247a43;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 13px;
+            background: #e8eaf0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #6257e8;
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+
+        .breakdown-item {
+            margin-bottom: 18px;
+        }
+
+        .breakdown-label {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .breakdown-track {
+            height: 9px;
+            background: #e8eaf0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .breakdown-fill {
+            height: 100%;
+            width: 0%;
+            background: #6257e8;
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+
+        .suggestion-list {
+            padding-left: 22px;
+            line-height: 1.9;
+            color: #55566a;
+        }
+
+        /* Resume-based interview questions */
+
+        .question-list {
+            padding-left: 25px;
+            color: #55566a;
+        }
+
+        .question-list li {
+            padding: 14px 15px;
+            margin-bottom: 12px;
+            background: #f7f6ff;
+            border: 1px solid #e7e4ff;
+            border-radius: 9px;
+            line-height: 1.6;
+        }
+
+        .question-intro {
+            color: #77788b;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .question-note {
+            margin-top: 15px;
+            padding: 13px;
+            background: #f0efff;
+            color: #5045c9;
+            border-radius: 9px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .empty-message {
+            color: #88899a;
+            font-size: 14px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #6257e8;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 850px) {
+            .sidebar {
+                width: 190px;
+            }
+
+            .score-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .layout {
+                display: block;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .logo {
+                margin-bottom: 15px;
+            }
+
+            .sidebar a {
+                display: inline-block;
+                padding: 9px;
+                margin: 3px;
+            }
+
+            .main-content {
+                padding: 20px 14px;
+            }
+
+            .score-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card,
+            .result-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">InterviewGen <span>AI</span></div>
+
+        <a href="/">Home</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/interview-setup">Mock Interview</a>
+        <a href="/resume-analysis" class="active">Resume Analysis</a>
+
+    </aside>
+
+    <main class="main-content">
+
+        <div class="top-heading">
+            <h1>AI Resume Analyzer</h1>
+            <p>
+                Analyze your resume, identify important skills, and understand
+                how well it matches your selected job role.
+            </p>
+        </div>
+
+        <section class="card">
+
+            <h2>Upload Your Resume</h2>
+
+            <p class="card-description">
+                Upload your resume in PDF or DOCX format to receive a resume
+                review and role-based skill analysis.
+            </p>
+
+            {% if error %}
+                <div class="alert error">{{ error }}</div>
+            {% endif %}
+
+            <form id="resumeForm"
+                  action="/analyze-resume"
+                  method="POST"
+                  enctype="multipart/form-data">
+
+                <div class="form-group">
+
+                    <label for="targetRole">
+                        Select Your Target Job Role
+                    </label>
+
+                    <select id="targetRole" name="target_role" required>
+
+                        <option value="">Choose a job role</option>
+
+                        {% for role in [
+                            "Python Developer",
+                            "Software Engineer",
+                            "AI/ML Engineer",
+                            "Data Scientist",
+                            "Web Developer",
+                            "Java Developer"
+                        ] %}
+
+                            <option value="{{ role }}"
+                                {% if target_role == role %}selected{% endif %}>
+                                {{ role }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="resume">Choose Resume</label>
+
+                    <input type="file"
+                           id="resume"
+                           name="resume"
+                           accept=".pdf,.docx"
+                           required>
+
+                    <p class="file-help">
+                        Accepted formats: PDF and DOCX.
+                        Maximum file size: 5 MB.
+                    </p>
+
+                </div>
+
+                <button type="submit"
+                        class="primary-btn"
+                        id="analyzeButton">
+                    Analyze My Resume
+                </button>
+
+            </form>
+
+        </section>
+
+        {% if result %}
+
+        <div class="results-heading">
+
+            <h2>Resume Analysis Results</h2>
+
+            <p>
+                Analysis for {{ result.target_role }}
+                {% if filename %} · {{ filename }}{% endif %}
+            </p>
+
+        </div>
+
+        <div class="score-grid">
+
+            <div class="score-card">
+                <p>Resume Score</p>
+                <h3>{{ result.score }}/100</h3>
+            </div>
+
+            <div class="score-card">
+                <p>Role Skill Match</p>
+                <h3>{{ result.skill_match_percentage }}%</h3>
+            </div>
+
+            <div class="score-card">
+                <p>Total Words</p>
+                <h3>{{ result.word_count }}</h3>
+            </div>
+
+        </div>
+
+        <section class="result-section">
+
+            <h3>Role Skill Match</h3>
+
+            <p>
+                Your resume matches
+                <strong>{{ result.skill_match_percentage }}%</strong>
+                of the skills identified for {{ result.target_role }}.
+            </p>
+
+            <div class="progress-track">
+                <div class="progress-fill"
+                     id="skillMatchBar"
+                     data-percentage="{{ result.skill_match_percentage }}">
+                </div>
+            </div>
+
+        </section>
+
+        <section class="result-section">
+
+            <h3>Skills Matched for Your Role</h3>
+
+            {% if result.matched_role_skills %}
+
+                <div class="skill-list">
+
+                    {% for skill in result.matched_role_skills %}
+                        <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p class="empty-message">
+                    No matching role-specific skills were detected.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+        <section class="result-section">
+
+            <h3>Skills to Improve</h3>
+
+            {% if result.missing_role_skills %}
+
+                <div class="skill-list">
+
+                    {% for skill in result.missing_role_skills %}
+                        <span class="skill-tag missing-tag">{{ skill }}</span>
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p class="empty-message">
+                    All listed role-specific skills were detected in your resume.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+        <section class="result-section">
+
+            <h3>All Detected Skills</h3>
+
+            {% if result.skills %}
+
+                <div class="skill-list">
+
+                    {% for skill in result.skills %}
+                        <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p class="empty-message">
+                    No skills were detected. Check whether your resume contains readable text.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+        <!-- NEW: RESUME-BASED INTERVIEW QUESTIONS -->
+
+        <section class="result-section">
+
+            <h3>Resume-Based Interview Questions</h3>
+
+            <p class="question-intro">
+                Practice these questions based on your selected job role
+                and the technical skills detected in your resume.
+            </p>
+
+            {% if result.practice_questions %}
+
+                <ol class="question-list">
+
+                    {% for question in result.practice_questions %}
+
+                        <li>{{ question }}</li>
+
+                    {% endfor %}
+
+                </ol>
+
+                <div class="question-note">
+                    Tip: Try answering each question aloud.
+                    Explain your concepts and give examples from your projects.
+                </div>
+
+            {% else %}
+
+                <p class="empty-message">
+                    No practice questions are available for this resume.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+        <section class="result-section">
+
+            <h3>Resume Score Breakdown</h3>
+
+            {% if result.score_breakdown %}
+
+                {% for label, value in result.score_breakdown.items() %}
+
+                    <div class="breakdown-item">
+
+                        <div class="breakdown-label">
+                            <span>{{ label.replace("_", " ") | title }}</span>
+                            <strong>{{ value }}</strong>
+                        </div>
+
+                        <div class="breakdown-track">
+
+                            <div class="breakdown-fill"
+                                 data-score="{{ value }}">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p class="empty-message">
+                    Score breakdown is not available.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+        <section class="result-section">
+
+            <h3>Resume Sections Found</h3>
+
+            {% if result.sections %}
+
+                <div class="skill-list">
+
+                    {% for section in result.sections %}
+                        <span class="skill-tag section-tag">{{ section }}</span>
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p class="empty-message">
+                    No standard resume sections were detected.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+        <section class="result-section">
+
+            <h3>Missing Resume Sections</h3>
+
+            {% if result.missing_sections %}
+
+                <div class="skill-list">
+
+                    {% for section in result.missing_sections %}
+                        <span class="skill-tag missing-tag">{{ section }}</span>
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p class="empty-message">
+                    All expected resume sections were detected.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+        <section class="result-section">
+
+            <h3>Suggestions to Improve Your Resume</h3>
+
+            {% if result.suggestions %}
+
+                <ul class="suggestion-list">
+
+                    {% for suggestion in result.suggestions %}
+                        <li>{{ suggestion }}</li>
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="empty-message">
+                    No suggestions are available.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+        <p class="file-help">
+            Note: This is a rule-based resume review. Its score is an
+            indicative project assessment, not an official ATS score
+            or a guarantee of selection.
+        </p>
+
+        {% endif %}
+
+        <a href="/dashboard" class="back-link">
+            ← Back to Dashboard
+        </a>
+
+    </main>
+
+</div>
+
+<script>
+
+    // Role skill match progress bar
+    const skillMatchBar = document.getElementById("skillMatchBar");
+
+    if (skillMatchBar) {
+
+        const percentage = Number(skillMatchBar.dataset.percentage);
+
+        if (Number.isFinite(percentage)) {
+            const safePercentage = Math.max(0, Math.min(100, percentage));
+            skillMatchBar.style.width = safePercentage + "%";
+        }
+
+    }
+
+    // Resume score breakdown bars
+    document.querySelectorAll(".breakdown-fill").forEach(function(bar) {
+
+        const score = Number(bar.dataset.score);
+
+        if (Number.isFinite(score)) {
+            const safeScore = Math.max(0, Math.min(30, score));
+            bar.style.width = (safeScore / 30 * 100) + "%";
+        }
+
+    });
+
+    // Resume upload validation
+    const resumeForm = document.getElementById("resumeForm");
+    const resumeInput = document.getElementById("resume");
+    const analyzeButton = document.getElementById("analyzeButton");
+
+    if (resumeForm && resumeInput && analyzeButton) {
+
+        resumeForm.addEventListener("submit", function(event) {
+
+            const file = resumeInput.files[0];
+
+            if (!file) {
+                event.preventDefault();
+                alert("Please select your resume.");
+                return;
+            }
+
+            const allowedExtensions = [".pdf", ".docx"];
+            const fileName = file.name.toLowerCase();
+
+            const isValidExtension = allowedExtensions.some(function(extension) {
+                return fileName.endsWith(extension);
+            });
+
+            if (!isValidExtension) {
+                event.preventDefault();
+                alert("Please upload only PDF or DOCX files.");
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                event.preventDefault();
+                alert("Your resume must be smaller than 5 MB.");
+                return;
+            }
+
+            analyzeButton.disabled = true;
+            analyzeButton.textContent = "Analyzing Resume...";
+
+        });
+
+    }
+
+</script>
+
+</body>
+</html>

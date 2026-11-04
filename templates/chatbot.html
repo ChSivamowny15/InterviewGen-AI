@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Assistant | InterviewGen AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b1020;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 22px 35px;
+            background: #151e34;
+            border-bottom: 1px solid #34415f;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 23px;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            background: #6551ce;
+            padding: 11px 16px;
+            border-radius: 8px;
+        }
+
+        main {
+            width: 100%;
+            max-width: 850px;
+            margin: auto;
+            padding: 35px 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .welcome {
+            text-align: center;
+            margin: 40px 0 25px;
+        }
+
+        .welcome h2 {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .welcome p {
+            color: #aeb8d0;
+            line-height: 1.7;
+        }
+
+        #messages {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 85%;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .user {
+            align-self: flex-end;
+            background: #6551ce;
+        }
+
+        .assistant {
+            align-self: flex-start;
+            background: #1b2943;
+            border: 1px solid #34415f;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            background: #151e34;
+            border: 1px solid #34415f;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: auto;
+        }
+
+        textarea {
+            flex: 1;
+            resize: none;
+            background: transparent;
+            color: white;
+            border: none;
+            outline: none;
+            padding: 12px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        button {
+            background: #8066ed;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #987fff;
+        }
+
+        #status {
+            color: #aeb8d0;
+            font-size: 13px;
+            margin: 12px 0;
+        }
+
+        @media(max-width: 600px) {
+            header {
+                padding: 18px;
+            }
+
+            header h1 {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>💬 InterviewGen AI Assistant</h1>
+    <a href="{{ url_for('dashboard') }}">← Dashboard</a>
+</header>
+
+<main>
+
+    <section class="welcome" id="welcome">
+        <h2>Hello! Welcome to your AI Assistant.</h2>
+        <p>
+            Ask me about Python, Java, SQL, AI/ML,
+            coding, HR interviews and placement preparation.
+        </p>
+    </section>
+
+    <div id="messages"></div>
+
+    <p id="status">Your AI assistant is ready.</p>
+
+    <div class="input-area">
+        <textarea
+            id="messageInput"
+            rows="2"
+            placeholder="Type your question here..."></textarea>
+
+        <button id="sendButton" onclick="sendMessage()">
+            Send
+        </button>
+    </div>
+
+</main>
+
+<script>
+    const input = document.getElementById("messageInput");
+    const messages = document.getElementById("messages");
+    const statusText = document.getElementById("status");
+    const sendButton = document.getElementById("sendButton");
+
+    function addMessage(text, sender) {
+        const div = document.createElement("div");
+        div.className = "message " + sender;
+        div.textContent = text;
+        messages.appendChild(div);
+        div.scrollIntoView({ behavior: "smooth" });
+    }
+
+    async function sendMessage() {
+        const message = input.value.trim();
+
+        if (!message) return;
+
+        addMessage(message, "user");
+        input.value = "";
+
+        statusText.textContent = "AI Assistant is thinking...";
+        sendButton.disabled = true;
+
+        try {
+            const response = await fetch(
+                "{{ url_for('chatbot_api') }}",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ message: message })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Chatbot request failed.");
+            }
+
+            addMessage(data.reply, "assistant");
+            statusText.textContent = "AI Assistant is ready.";
+
+        } catch (error) {
+            addMessage("Error: " + error.message, "assistant");
+            statusText.textContent = "Please check the chatbot connection.";
+        } finally {
+            sendButton.disabled = false;
+            input.focus();
+        }
+    }
+
+    input.addEventListener("keydown", function(event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+</script>
+
+</body>
+</html>
