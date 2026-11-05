@@ -205,4 +205,184 @@ RAG and LLM serve different purposes: RAG provides relevant information, while t
 3. **Interview Configuration:** Candidates select their job role, interview type, and difficulty level.
 4. **Question Selection:** The system selects relevant questions from the configured question bank.
 5. **Answer Submission:** Candidates submit answers through text or voice interaction.
-6. **Context Retrieval:** RAG-supported workflows retrieve
+6. **Context Retrieval:** RAG-supported workflows retrieve relevant candidate or resume-related information.
+7. **AI Processing:** The retrieved context and user input are supplied to the configured LLM workflow.
+8. **AI Evaluation:** Groq API with GPT-OSS-120B generates evaluation results and feedback.
+9. **Performance Analysis:** The system presents scores, strengths, weaknesses, and improvement suggestions.
+10. **Report Generation:** Interview results are stored and presented through the dashboard.
+
+---
+
+## 📂 Project Structure
+
+```text
+InterviewGen-AI/
+│
+├── app.py
+├── evaluator.py
+├── requirements.txt
+├── .env
+├── .gitignore
+├── README.md
+│
+├── ai_modules/
+│   └── answer_evaluator.py
+│
+├── templates/
+│   ├── welcome.html
+│   ├── login.html
+│   ├── register.html
+│   ├── dashboard.html
+│   ├── profile.html
+│   ├── settings.html
+│   ├── interview_setup.html
+│   ├── resume_analysis.html
+│   ├── chatbot.html
+│   ├── voice_practice.html
+│   ├── analytics.html
+│   ├── certificates.html
+│   └── other HTML templates used by the application
+│
+├── static/
+│   ├── css/
+│   │   └── style.css
+│   │
+│   ├── js/
+│   │   └── other JavaScript files
+│   │
+│   ├── images/
+│   │
+│   └── other static files
+│
+└── instance/
+    └── interviewgen.db
+```
+
+*Note: This is an illustrative project structure. Update the file and folder names to match the actual files in your repository. Do not create empty folders or files just to match this diagram.*
+
+---
+
+## 🚀 How to Run the Project Locally
+
+### Prerequisites
+
+- Python 3.10 or later, compatible with the installed dependencies.
+- Visual Studio Code.
+- Git.
+- Groq API key.
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/ChSivamowny15/InterviewGen-AI.git
+```
+
+### Step 2: Navigate to the Project Directory
+
+```bash
+cd InterviewGen-AI
+```
+
+### Step 3: Create a Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+### Step 4: Activate the Virtual Environment
+
+**Windows PowerShell:**
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+### Step 5: Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Step 6: Configure the API Key
+
+Create a `.env` file in the project root directory and add:
+
+```env
+GROQ_API_KEY=your_groq_api_key
+```
+
+Replace `your_groq_api_key` with your actual Groq API key.
+
+**Important:** Never upload your `.env` file or API key to GitHub.
+
+### Step 7: Run the Application
+
+```bash
+python app.py
+```
+
+### Step 8: Open the Website
+
+Visit:
+
+http://127.0.0.1:5000
+
+---
+
+## ☁️ Deployment
+
+InterviewGen AI is deployed on Render using GitHub integration.
+
+### Deployment Tools
+
+| Tool | Purpose |
+|---|---|
+| GitHub | Source code management and repository integration |
+| Render | Cloud hosting and deployment |
+| Gunicorn | Runs the Flask application in production |
+
+### Deployment Configuration
+
+**Build Command:**
+
+```bash
+pip install -r requirements.txt
+```
+
+**Start Command:**
+
+```bash
+gunicorn app:app
+```
+
+**Live Application:**
+
+https://interviewgen-ai-rtnk.onrender.com
+
+---
+
+## 🔮 Future Enhancements
+
+- **Advanced RAG Pipeline:** Expand context retrieval to support more comprehensive resume-based and knowledge-base-based retrieval.
+- **Improved Resume Intelligence:** Improve document processing, skill extraction, and personalised question generation.
+- **Advanced Embedding and Vector Search:** Introduce or extend semantic search and vector-based retrieval where required.
+- **Adaptive Interviews:** Dynamically adjust question difficulty based on candidate performance.
+- **Detailed Speech Analytics:** Enhance speaking pace, filler-word detection, and communication analysis.
+- **Advanced Performance Analytics:** Provide deeper insights into candidate progress and interview readiness.
+- **Expanded Personalisation:** Improve the use of candidate-specific information across interview workflows.
+
+---
+
+## 🎯 Project Objective
+
+The main objective of InterviewGen AI is to provide an intelligent and interactive interview preparation platform that helps candidates practise interviews, evaluate their answers, identify weaknesses, and continuously improve their technical knowledge and communication skills.
+
+By combining RAG-supported context retrieval with LLM-based response generation, the application aims to make interview preparation more relevant, personalised, and effective.
+
+---
+
+## 👩‍💻 Developed By
+
+**InterviewGen AI – AI-Based Mock Interview & Performance Analyzer**
+
+Developed as an academic project by the Computer Science and Engineering – Artificial Intelligence and Machine Learning team.
