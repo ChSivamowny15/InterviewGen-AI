@@ -1,66 +1,193 @@
 
+import os
 import time
-import requests
 import json
+import math
+import requests
+
+from pathlib import Path
+from dotenv import load_dotenv
 
 
 # --------------------------------------------------
-# OLLAMA CONFIGURATION
+# GROQ API CONFIGURATION
 # --------------------------------------------------
 
-OLLAMA_URL = "http://localhost:11434/api/chat"
-MODEL_NAME = "qwen2.5:3b"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+ENV_FILE = PROJECT_ROOT / ".env"
+
+load_dotenv(dotenv_path=ENV_FILE, override=True)
+
+GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+MODEL_NAME = "openai/gpt-oss-120b"
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
+
+print("ENV FILE EXISTS:", ENV_FILE.exists())
+print("GROQ API KEY LOADED:", bool(GROQ_API_KEY))
+print("GROQ MODEL:", MODEL_NAME)
 
 
 # --------------------------------------------------
-# COMMON OLLAMA FUNCTION
+# COMMON GROQ FUNCTION
 # --------------------------------------------------
 
-def call_ollama(prompt, timeout=180):
+def call_groq(prompt, timeout=180):
+
+    api_key = (
+        os.getenv("GROQ_API_KEY", "").strip()
+        or GROQ_API_KEY
+    )
+
+    if not api_key:
+        raise ValueError(
+            "GROQ_API_KEY is missing. "
+            "Configure it in your .env file or Render environment variables."
+        )
 
     start_time = time.time()
 
-    response = requests.post(
-        OLLAMA_URL,
-        json={
-            "model": MODEL_NAME,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-            "stream": False,
-            "format": "json",
-            "keep_alive": "30m",
-            "options": {
-                "temperature": 0.1,
-                "num_predict": 1000,
-                "num_ctx": 4096
+    payload = {
+        "model": MODEL_NAME,
+        "messages": [
+            {
+                "role": "system",
+                "content": (
+                    "You are an expert interview evaluator. "
+                    "Evaluate answers fairly and objectively. "
+                    "Return only valid JSON matching the requested structure. "
+                    "Do not include Markdown or additional commentary."
+                )
+            },
+            {
+                "role": "user",
+                "content": prompt
             }
-        },
-        timeout=timeout
-    )
+        ],
+        "temperature": 0.1,
+        "max_completion_tokens": 8000,
+        "reasoning_effort": "low",
+        "stream": False,
+        "response_format": {
+            "type": "json_object"
+        }
+    }
 
-    response.raise_for_status()
+    try:
 
-    elapsed_time = time.time() - start_time
+        response = requests.post(
+            GROQ_URL,
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            },
+            json=payload,
+            timeout=timeout
+        )
 
-    print(
-        "OLLAMA RESPONSE TIME:",
-        round(elapsed_time, 2),
-        "seconds"
-    )
+        response.raise_for_status()
 
-    result = response.json()
-    ai_text = result["message"]["content"]
+        result = response.json()
 
-    evaluation = json.loads(ai_text)
+        choices = result.get("choices", [])
 
-    if not isinstance(evaluation, dict):
-        raise ValueError("Ollama returned an invalid JSON object.")
+        if not choices:
+            raise ValueError("Groq returned no response choices.")
 
-    return evaluation
+        message = choices[0].get("message", {})
+        ai_text = message.get("content")
+
+        if not isinstance(ai_text, str) or not ai_text.strip():
+            raise ValueError(
+                "Groq returned empty content. "
+                "Check completion token limits and model response."
+            )
+
+        ai_text = ai_text.strip()
+
+        # Remove accidental Markdown code fences
+        if ai_text.startswith("```"):
+            ai_text = ai_text.replace("```json", "", 1)
+
+            if ai_text.endswith("```"):
+                ai_text = ai_text[:-3]
+
+            ai_text = ai_text.strip()
+
+        evaluation = json.loads(ai_text)
+
+        if not isinstance(evaluation, dict):
+            raise ValueError("Groq returned an invalid JSON object.")
+
+        print(
+            "GROQ RESPONSE TIME:",
+            round(time.time() - start_time, 2),
+            "seconds"
+        )
+
+        return evaluation
+
+    except requests.exceptions.Timeout as error:
+
+        raise RuntimeError(
+            "Groq API request timed out. Please try again."
+        ) from error
+
+    except requests.exceptions.HTTPError as error:
+
+        status_code = (
+            error.response.status_code
+            if error.response is not None
+            else "Unknown"
+        )
+
+        response_text = (
+            error.response.text[:500]
+            if error.response is not None
+            else str(error)
+        )
+
+        if status_code == 429:
+            message = (
+                "Groq API rate limit reached. Please wait and try again."
+            )
+
+        elif status_code in (401, 403):
+            message = (
+                "Groq API authentication or permission failed. "
+                "Check your API key and account access."
+            )
+
+        elif status_code == 404:
+            message = (
+                f"Groq model not found or unavailable: {MODEL_NAME}"
+            )
+
+        elif status_code == 400:
+            message = (
+                f"Groq rejected the request: {response_text}"
+            )
+
+        else:
+            message = (
+                f"Groq API request failed with status "
+                f"{status_code}: {response_text}"
+            )
+
+        raise RuntimeError(message) from error
+
+    except requests.exceptions.RequestException as error:
+
+        raise RuntimeError(
+            f"Groq network request failed: {error}"
+        ) from error
+
+    except (ValueError, KeyError, IndexError) as error:
+
+        raise RuntimeError(
+            f"Groq evaluation response error: {error}"
+        ) from error
 
 
 # --------------------------------------------------
@@ -70,15 +197,22 @@ def call_ollama(prompt, timeout=180):
 def safe_score(value):
 
     try:
+
         score = float(value)
 
-        if not (score == score and abs(score) != float("inf")):
-            return 0
+        if not math.isfinite(score):
+            raise ValueError("Score must be a finite number.")
 
-        return round(max(0, min(100, score)), 1)
+        if not 0 <= score <= 100:
+            raise ValueError("Score must be between 0 and 100.")
+
+        return round(score, 1)
 
     except (ValueError, TypeError):
-        return 0
+
+        raise ValueError(
+            f"Invalid evaluation score: {value!r}"
+        )
 
 
 # --------------------------------------------------
@@ -89,21 +223,18 @@ def is_insufficient_answer(answer):
 
     answer = (answer or "").strip()
 
-    # Reject empty answers
     if not answer:
         return True
 
-    # Remove spaces and punctuation
     meaningful_text = "".join(
-        character for character in answer
+        character
+        for character in answer
         if character.isalnum()
     )
 
-    # Reject extremely short answers
     if len(meaningful_text) < 3:
         return True
 
-    # Reject answers containing only repeated characters
     if len(set(meaningful_text.lower())) == 1:
         return True
 
@@ -130,7 +261,8 @@ def insufficient_answer_result():
         "suggestions": (
             "Provide a relevant explanation using complete "
             "sentences and supporting details."
-        )
+        ),
+        "evaluation_status": "success"
     }
 
 
@@ -141,14 +273,17 @@ def insufficient_answer_result():
 def default_result(message):
 
     return {
-        "score": 0,
-        "relevance": 0,
-        "technical_accuracy": 0,
-        "completeness": 0,
-        "communication": 0,
+        "score": None,
+        "relevance": None,
+        "technical_accuracy": None,
+        "completeness": None,
+        "communication": None,
         "strengths": "AI evaluation could not be completed.",
-        "weaknesses": str(message),
-        "suggestions": "Please check Ollama and try again."
+        "weaknesses": f"Evaluation error: {message}",
+        "suggestions": (
+            "Please check the AI evaluator configuration and try again."
+        ),
+        "evaluation_status": "failed"
     }
 
 
@@ -158,71 +293,88 @@ def default_result(message):
 
 def format_evaluation(evaluation):
 
-    return {
-        "score": safe_score(
-            evaluation.get("score", 0)
-        ),
+    if not isinstance(evaluation, dict):
+        raise ValueError("Invalid evaluation response.")
 
-        "relevance": safe_score(
-            evaluation.get("relevance", 0)
-        ),
+    required_fields = [
+        "relevance",
+        "technical_accuracy",
+        "completeness",
+        "communication"
+    ]
 
-        "technical_accuracy": safe_score(
-            evaluation.get("technical_accuracy", 0)
-        ),
+    missing_fields = [
+        field
+        for field in required_fields
+        if field not in evaluation
+    ]
 
-        "completeness": safe_score(
-            evaluation.get("completeness", 0)
-        ),
-
-        "communication": safe_score(
-            evaluation.get("communication", 0)
-        ),
-
-        "strengths": str(
-            evaluation.get(
-                "strengths",
-                "No strengths identified."
-            )
-        ),
-
-        "weaknesses": str(
-            evaluation.get(
-                "weaknesses",
-                "No weaknesses identified."
-            )
-        ),
-
-        "suggestions": str(
-            evaluation.get(
-                "suggestions",
-                "Continue practising your answers."
-            )
+    if missing_fields:
+        raise ValueError(
+            "AI response is missing score fields: "
+            + ", ".join(missing_fields)
         )
+
+    relevance = safe_score(evaluation["relevance"])
+
+    technical_accuracy = safe_score(
+        evaluation["technical_accuracy"]
+    )
+
+    completeness = safe_score(
+        evaluation["completeness"]
+    )
+
+    communication = safe_score(
+        evaluation["communication"]
+    )
+
+    overall_score = round(
+        (
+            relevance
+            + technical_accuracy
+            + completeness
+            + communication
+        ) / 4,
+        1
+    )
+
+    return {
+        "score": overall_score,
+        "relevance": relevance,
+        "technical_accuracy": technical_accuracy,
+        "completeness": completeness,
+        "communication": communication,
+        "strengths": str(
+            evaluation.get("strengths") or "No strengths identified."
+        ),
+        "weaknesses": str(
+            evaluation.get("weaknesses") or "No weaknesses identified."
+        ),
+        "suggestions": str(
+            evaluation.get("suggestions")
+            or "Continue practising your answers."
+        ),
+        "evaluation_status": "success"
     }
 
 
 # --------------------------------------------------
 # SINGLE ANSWER EVALUATION
-# Used by evaluator.py
 # --------------------------------------------------
 
-def evaluate_with_gpt(
-    question,
-    answer,
-    role="Software Engineer"
-):
+def evaluate_with_gpt(question, answer, role="Software Engineer"):
 
     answer = (answer or "").strip()
+    question = (question or "").strip()
 
-    # Validate answer before calling Ollama
     if is_insufficient_answer(answer):
         return insufficient_answer_result()
 
     prompt = f"""
 You are an expert technical and HR interview evaluator.
 
-Evaluate the candidate's answer carefully and objectively.
+Evaluate the candidate's answer fairly and objectively.
 
 JOB ROLE:
 {role}
@@ -233,41 +385,43 @@ INTERVIEW QUESTION:
 CANDIDATE ANSWER:
 {answer}
 
-Evaluate the answer using these four criteria:
+EVALUATION CRITERIA:
 
 1. RELEVANCE:
-Measure how directly the answer addresses the question.
+Evaluate how directly the answer addresses the question.
 
 2. TECHNICAL ACCURACY:
-Measure the correctness of technical concepts, facts,
-terminology, and explanations.
+Evaluate whether the concepts, facts and explanations are correct.
+For HR questions, evaluate the appropriateness of the response.
 
 3. COMPLETENESS:
-Measure whether the answer covers the important points
-needed to answer the question.
+Evaluate whether the answer covers the important points.
 
 4. COMMUNICATION:
-Measure clarity, logical structure, readability,
-and quality of explanation.
+Evaluate clarity, logical structure and explanation quality.
 
 SCORING RULES:
-- Each criterion must receive a score from 0 to 100.
-- Calculate the overall score as the average of the four criteria.
-- Give low scores to incorrect, incomplete, or irrelevant answers.
-- Do not reward an answer simply because it is long.
-- Do not expect technical content for a non-technical HR question.
+
+- Give each criterion a score from 0 to 100.
+- A correct and relevant answer should receive high marks.
+- Do not give zero to a correct answer.
+- Give zero only when the answer is completely irrelevant
+  or contains no correct information.
+- Give proportionate marks for partially correct answers.
+- Do not reward answer length alone.
+- Do not expect technical content for non-technical HR questions.
 - Evaluate according to the selected job role.
 - Do not invent information that the candidate did not provide.
-- A long but irrelevant answer must receive a low score.
-- A partially correct answer must receive a proportionate score.
+- Calculate the overall score as the average of the four criteria.
 
 FEEDBACK:
+
 - Strengths: Mention what the candidate did well.
 - Weaknesses: Mention what needs improvement.
 - Suggestions: Give practical ways to improve the answer.
 - Keep feedback specific and constructive.
 
-Return ONLY valid JSON in this exact structure:
+Return ONLY valid JSON using this structure:
 
 {{
     "score": 75,
@@ -279,41 +433,33 @@ Return ONLY valid JSON in this exact structure:
     "weaknesses": "Some important details are missing.",
     "suggestions": "Add a practical example to support the explanation."
 }}
-
-Do not include markdown or text outside the JSON.
 """
 
     try:
 
-        evaluation = call_ollama(prompt)
+        evaluation = call_groq(prompt)
 
         return format_evaluation(evaluation)
 
     except Exception as error:
 
-        print("SINGLE ANSWER AI ERROR:", error)
+        print("SINGLE ANSWER AI ERROR:", repr(error))
 
-        return default_result(str(error))
+        return default_result(error)
 
 
 # --------------------------------------------------
 # BATCH INTERVIEW EVALUATION
-# Used by app.py
 # --------------------------------------------------
 
-def evaluate_interview(
-    questions,
-    answers,
-    role="Software Engineer"
-):
+def evaluate_interview(questions, answers, role="Software Engineer"):
 
-    if not questions:
+    if not isinstance(questions, list) or not questions:
         return []
 
     if not isinstance(answers, list):
         answers = []
 
-    # Prepare answers in the correct order
     prepared_answers = []
 
     for index in range(len(questions)):
@@ -329,48 +475,26 @@ def evaluate_interview(
         else:
             prepared_answers.append("")
 
-    # Create one result for every question
-    results = []
+    results = [None] * len(questions)
 
-    for answer in prepared_answers:
-
-        if is_insufficient_answer(answer):
-
-            results.append(
-                insufficient_answer_result()
-            )
-
-        else:
-
-            results.append({
-                "score": 0,
-                "relevance": 0,
-                "technical_accuracy": 0,
-                "completeness": 0,
-                "communication": 0,
-                "strengths": "Evaluation pending.",
-                "weaknesses": "Evaluation pending.",
-                "suggestions": "Evaluation pending."
-            })
-
-    # Collect only answers that pass basic validation
     prompt_data = []
     original_indexes = []
 
-    for index, question in enumerate(questions):
+    for index, answer in enumerate(prepared_answers):
 
-        if not is_insufficient_answer(
-            prepared_answers[index]
-        ):
+        if is_insufficient_answer(answer):
+
+            results[index] = insufficient_answer_result()
+
+        else:
 
             prompt_data.append({
-                "question": question,
-                "answer": prepared_answers[index]
+                "question": str(questions[index]),
+                "answer": answer
             })
 
             original_indexes.append(index)
 
-    # No meaningful answers to evaluate
     if not prompt_data:
         return results
 
@@ -385,13 +509,13 @@ Evaluate every candidate answer independently.
 QUESTIONS AND ANSWERS:
 {json.dumps(prompt_data, ensure_ascii=False)}
 
-For EACH answer, evaluate:
+Evaluate each answer using these four criteria:
 
 1. Relevance:
 How directly does the answer address the question?
 
 2. Technical Accuracy:
-Are the concepts, facts, and explanations correct?
+Are the concepts, facts and explanations correct?
 For HR questions, evaluate the appropriateness of the response.
 
 3. Completeness:
@@ -401,22 +525,27 @@ Does the answer cover the important points?
 Is the answer clear, logical and well structured?
 
 SCORING RULES:
+
 - Give each criterion a score from 0 to 100.
-- Overall score must be the average of the four criteria.
-- Evaluate each answer independently.
+- A correct and relevant answer should receive high marks.
+- Do not give zero to a correct answer.
+- Give zero only when an answer is completely irrelevant
+  or contains no correct information.
+- Give proportionate marks for partially correct answers.
+- Evaluate every answer independently.
 - Do not reward irrelevant or incorrect answers.
 - Do not reward length alone.
 - Consider the selected job role.
 - Do not expect technical explanations for non-technical questions.
-- A long but irrelevant answer must receive a low score.
-- A partially correct answer must receive a proportionate score.
+- Calculate the overall score as the average of the four criteria.
 
 FEEDBACK RULES:
+
 - Give specific strengths.
 - Identify actual weaknesses.
 - Provide practical suggestions.
 - Keep each feedback field concise.
-- Do not use markdown.
+- Do not use Markdown.
 
 Return ONLY valid JSON in this exact structure:
 
@@ -436,6 +565,7 @@ Return ONLY valid JSON in this exact structure:
 }}
 
 IMPORTANT:
+
 - Return exactly {len(prompt_data)} results.
 - Preserve the original order.
 - Do not combine answers.
@@ -445,39 +575,31 @@ IMPORTANT:
 
     try:
 
-        evaluation = call_ollama(
-            prompt,
-            timeout=180
-        )
+        evaluation = call_groq(prompt, timeout=180)
 
         ai_results = evaluation.get("results", [])
 
         if not isinstance(ai_results, list):
             raise ValueError("Invalid AI results format.")
 
-        # Match AI results with original question indexes
+        if len(ai_results) != len(original_indexes):
+            raise ValueError(
+                "Groq returned an unexpected number of evaluation results."
+            )
+
         for position, original_index in enumerate(original_indexes):
 
-            if position >= len(ai_results):
-                continue
-
-            item = ai_results[position]
-
-            if not isinstance(item, dict):
-                continue
-
-            results[original_index] = format_evaluation(item)
+            results[original_index] = format_evaluation(
+                ai_results[position]
+            )
 
         return results
 
     except Exception as error:
 
-        print("BATCH INTERVIEW AI ERROR:", error)
+        print("BATCH INTERVIEW AI ERROR:", repr(error))
 
         for original_index in original_indexes:
-
-            results[original_index] = default_result(
-                str(error)
-            )
+            results[original_index] = default_result(error)
 
         return results
