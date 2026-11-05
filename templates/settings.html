@@ -1,0 +1,475 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings | InterviewGen AI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #090e1e, #151a35, #211c49);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* Header */
+
+        header {
+            height: 75px;
+            padding: 0 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 15, 32, 0.85);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+        }
+
+        .logo span {
+            color: #9b8cff;
+        }
+
+        .header-label {
+            color: #a5b4fc;
+            font-size: 13px;
+        }
+
+        /* Main */
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .page-heading {
+            margin-bottom: 30px;
+        }
+
+        .page-heading h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .page-heading p {
+            color: #a5b4fc;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Cards */
+
+        .settings-card {
+            background: rgba(255,255,255,0.055);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 22px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            backdrop-filter: blur(15px);
+            transition: 0.3s;
+        }
+
+        .settings-card:hover {
+            border-color: rgba(139,92,246,0.4);
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 13px;
+            font-size: 22px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+        }
+
+        .card-heading h2 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .card-heading p {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        /* Account details */
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.09);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #a5b4fc;
+            font-size: 13px;
+        }
+
+        .detail-value {
+            color: #f8fafc;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        /* Security */
+
+        .security-box {
+            background: rgba(139,92,246,0.09);
+            border: 1px solid rgba(139,92,246,0.2);
+            padding: 20px;
+            border-radius: 13px;
+            color: #c4b5fd;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .security-box strong {
+            color: #e9d5ff;
+        }
+
+        /* Application info */
+
+        .version-badge {
+            background: rgba(34,197,94,0.12);
+            color: #4ade80;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+
+        .button-group {
+            display: flex;
+            gap: 14px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 22px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #8b5cf6, #4f46e5);
+            color: white;
+        }
+
+        .profile-btn {
+            background: rgba(255,255,255,0.08);
+            color: #c4b5fd;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logout-btn {
+            background: rgba(239,68,68,0.12);
+            color: #fca5a5;
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.1);
+        }
+
+        footer {
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+            padding: 25px;
+        }
+
+        /* Responsive */
+
+        @media(max-width: 600px) {
+
+            header {
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+
+            .container {
+                margin: 25px auto;
+                padding: 15px;
+            }
+
+            .page-heading h1 {
+                font-size: 25px;
+            }
+
+            .settings-card {
+                padding: 22px;
+            }
+
+            .detail-row {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .detail-value {
+                text-align: left;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+
+    <header>
+
+        <div class="logo">
+            InterviewGen <span>AI</span>
+        </div>
+
+        <div class="header-label">
+            Account Settings
+        </div>
+
+    </header>
+
+
+    <!-- Main Content -->
+
+    <main class="container">
+
+        <div class="page-heading">
+
+            <h1>Settings</h1>
+
+            <p>
+                Manage your account information, security and application details.
+            </p>
+
+        </div>
+
+
+        <!-- Account Information -->
+
+        <section class="settings-card">
+
+            <div class="card-heading">
+
+                <div class="icon-box">👤</div>
+
+                <div>
+                    <h2>Account Information</h2>
+                    <p>Your registered account details</p>
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">Full Name</div>
+
+                <div class="detail-value">
+                    {{ user["name"] }}
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">Email Address</div>
+
+                <div class="detail-value">
+                    {{ user["email"] }}
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">Account Type</div>
+
+                <div class="detail-value">
+                    Registered User
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Security -->
+
+        <section class="settings-card">
+
+            <div class="card-heading">
+
+                <div class="icon-box">🔐</div>
+
+                <div>
+                    <h2>Security & Privacy</h2>
+                    <p>Keep your account protected</p>
+                </div>
+
+            </div>
+
+
+            <div class="security-box">
+
+                <strong>Your account security matters.</strong>
+
+                <br>
+
+                Your password is stored securely using password hashing.
+
+                <br>
+
+                Never share your login credentials with anyone.
+
+                <br>
+
+                Always log out when using a shared computer.
+
+            </div>
+
+        </section>
+
+
+        <!-- Application Information -->
+
+        <section class="settings-card">
+
+            <div class="card-heading">
+
+                <div class="icon-box">🤖</div>
+
+                <div>
+                    <h2>Application Information</h2>
+                    <p>About your interview preparation platform</p>
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">Application Name</div>
+
+                <div class="detail-value">
+                    InterviewGen AI
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">Application Version</div>
+
+                <div class="detail-value">
+                    1.0.0
+                </div>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <div class="detail-label">Account Status</div>
+
+                <div class="version-badge">
+                    ● Active
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Navigation -->
+
+        <div class="button-group">
+
+            <a href="{{ url_for('dashboard') }}"
+               class="btn primary-btn">
+                ← Back to Dashboard
+            </a>
+
+            <a href="{{ url_for('profile') }}"
+               class="btn profile-btn">
+                👤 My Profile
+            </a>
+
+            <a href="{{ url_for('logout') }}"
+               class="btn logout-btn">
+                Logout →
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <footer>
+        © 2026 InterviewGen AI. All rights reserved.
+    </footer>
+
+</body>
+</html>

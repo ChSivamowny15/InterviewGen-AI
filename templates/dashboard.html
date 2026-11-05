@@ -220,6 +220,70 @@
                 flex-direction: column;
             }
         }
+    .dashboard-user-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.dashboard-user-link:hover {
+    opacity: 0.85;
+}
+.dashboard-user-wrapper {
+    position: relative;
+}
+
+.dashboard-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: inherit;
+    padding: 8px;
+    border-radius: 10px;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 150px;
+    background: #202443;
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    border-radius: 10px;
+    padding: 8px;
+    z-index: 1000;
+}
+
+.profile-dropdown.show {
+    display: block;
+}
+
+.profile-dropdown a {
+    display: block;
+    padding: 11px;
+    color: #fca5a5;
+    text-decoration: none;
+    border-radius: 7px;
+}
+
+.profile-dropdown a:hover {
+    background: rgba(139, 92, 246, 0.2);
+}
+
+.user-arrow {
+    transition: transform 0.2s ease;
+}
+
+.dashboard-user[aria-expanded="true"] .user-arrow {
+    transform: rotate(180deg);
+}
+
     </style>
 </head>
 
@@ -300,16 +364,15 @@
 
         <nav class="sidebar-nav">
 
-            <a href="#" class="sidebar-link">
-                <span>👤</span>
-                Profile
-            </a>
+            <a href="{{ url_for('profile') }}" class="sidebar-link">
+    <span>👤</span>
+    Profile
+</a>
 
-            <a href="#" class="sidebar-link">
-                <span>⚙</span>
-                Settings
-            </a>
-
+            <a href="{{ url_for('settings') }}" class="sidebar-link">
+    <span>⚙️</span>
+    Settings
+</a>
         </nav>
 
         <div class="sidebar-upgrade">
@@ -348,32 +411,53 @@
                 <h1>Dashboard</h1>
             </div>
 
-            <div class="topbar-actions">
+            
 
-                <button class="notification-button"
-                        type="button"
-                        aria-label="Notifications">
-                    🔔
-                    <span></span>
-                </button>
+                
+        <div class="topbar-actions">
 
-                <div class="dashboard-user">
+    <button class="notification-button"
+            type="button"
+            aria-label="Notifications">
+        🔔
+        <span></span>
+    </button>
 
-                    <div class="user-avatar">
-                        SM
-                    </div>
+    {% set display_name = (session.get('user_name') or 'Student').strip() %}
+    {% set name_parts = display_name.split() %}
+    {% set initials = name_parts[0][0] | upper %}
 
-                    <div>
-                        <strong>Student</strong>
-                        <p>Interview Candidate</p>
-                    </div>
+    {% if name_parts|length > 1 %}
+        {% set initials = initials ~ name_parts[-1][0] | upper %}
+    {% endif %}
 
-                    <span class="user-arrow">⌄</span>
+    <div class="dashboard-user-wrapper">
 
-                </div>
+        <button type="button"
+                class="dashboard-user"
+                id="profileToggle"
+                aria-expanded="false"
+                aria-controls="profileDropdown">
 
+            <div class="user-avatar">
+                {{ initials }}
             </div>
 
+            <span class="user-arrow">⌄</span>
+
+        </button>
+
+        <div class="profile-dropdown" id="profileDropdown">
+
+            <a href="{{ url_for('logout') }}" class="logout-link">
+                ↪ Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
         </header>
 
 
@@ -1177,6 +1261,29 @@
 
 
 <script src="{{ url_for('static', filename='js/dashboard.js') }}">
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const toggle = document.getElementById("profileToggle");
+    const dropdown = document.getElementById("profileDropdown");
+
+    if (!toggle || !dropdown) return;
+
+    toggle.addEventListener("click", function (event) {
+        event.stopPropagation();
+
+        const isOpen = dropdown.classList.toggle("show");
+
+        toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    document.addEventListener("click", function () {
+        dropdown.classList.remove("show");
+        toggle.setAttribute("aria-expanded", "false");
+    });
+
+});
 </script>
 
 </body>

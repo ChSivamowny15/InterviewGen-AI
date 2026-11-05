@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | InterviewGen AI</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #111329;
+            color: #f5f5ff;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        .page-heading {
+            margin-bottom: 30px;
+        }
+
+        .page-heading h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .page-heading p {
+            color: #aeb9e9;
+        }
+
+        .profile-card {
+            background: #222641;
+            border: 1px solid #373d5b;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        .cover {
+            height: 145px;
+            background: linear-gradient(110deg, #4836d4, #a020e8);
+        }
+
+        /* Profile identity - fixed overlapping issue */
+        .identity {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            padding: 0 45px 30px;
+            position: relative;
+        }
+
+        .avatar {
+            width: 125px;
+            height: 125px;
+            margin-top: -42px;
+            flex-shrink: 0;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #8d7cf7, #6258e9);
+            border: 5px solid #222641;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 53px;
+        }
+
+        .identity-info {
+            flex: 1;
+            min-width: 0;
+            padding-top: 8px;
+        }
+
+        .identity-info h2 {
+            font-size: 25px;
+            overflow-wrap: anywhere;
+            margin-bottom: 8px;
+        }
+
+        .identity-info p {
+            color: #aeb9e9;
+            font-size: 14px;
+        }
+
+        .status {
+            background: rgba(34,197,94,0.12);
+            border: 1px solid rgba(34,197,94,0.3);
+            color: #4ade80;
+            padding: 11px 17px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .content {
+            padding: 10px 45px 40px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 21px;
+            margin-bottom: 8px;
+        }
+
+        .section-description {
+            color: #a6afd5;
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #b9c3f5;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            background: #2b304c;
+            border: 1px solid #414866;
+            color: #fff;
+            padding: 14px 15px;
+            border-radius: 11px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #9475ff;
+            box-shadow: 0 0 0 3px rgba(148,117,255,0.12);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #818aa9;
+        }
+
+        textarea {
+            min-height: 105px;
+            resize: vertical;
+        }
+
+        .readonly {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: #3a405e;
+            margin: 32px 0;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 14px 23px;
+            border-radius: 11px;
+            border: none;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+
+        .save-btn {
+            background: linear-gradient(110deg, #5945e8, #a12be7);
+            color: white;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(125,70,230,0.3);
+        }
+
+        .back-btn {
+            background: #343a59;
+            color: white;
+        }
+
+        .logout-btn {
+            background: rgba(239,68,68,0.12);
+            color: #ff8585;
+            border: 1px solid rgba(239,68,68,0.25);
+        }
+
+        .flash {
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            background: rgba(34,197,94,0.12);
+            color: #6ee7a0;
+            border: 1px solid rgba(34,197,94,0.25);
+        }
+
+        .flash.error {
+            background: rgba(239,68,68,0.12);
+            color: #ff9999;
+            border-color: rgba(239,68,68,0.25);
+        }
+
+        @media(max-width: 750px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            .identity {
+                padding: 0 20px 25px;
+                flex-wrap: wrap;
+            }
+
+            .identity-info {
+                flex-basis: calc(100% - 150px);
+            }
+
+            .identity-info h2 {
+                font-size: 19px;
+            }
+
+            .status {
+                margin-left: auto;
+            }
+
+            .content {
+                padding: 10px 20px 30px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .page-heading h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="page-heading">
+        <h1>My Profile</h1>
+        <p>Manage your personal information and academic details.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash {% if category == 'error' %}error{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="profile-card">
+
+        <div class="cover"></div>
+
+        <div class="identity">
+
+            <div class="avatar">👤</div>
+
+            <div class="identity-info">
+                <h2>{{ user['name'] }}</h2>
+                <p>InterviewGen AI Member</p>
+            </div>
+
+            <div class="status">● Active Account</div>
+
+        </div>
+
+        <div class="content">
+
+            <form method="POST">
+
+                <!-- PERSONAL INFORMATION -->
+                <div class="section">
+
+                    <h3 class="section-title">Personal Information</h3>
+                    <p class="section-description">
+                        Enter your basic personal and contact information.
+                    </p>
+
+                    <div class="form-grid">
+
+                        <div class="field">
+                            <label>Full Name *</label>
+                            <input type="text" name="name"
+                                value="{{ user['name'] or '' }}"
+                                placeholder="Enter your full name" required>
+                        </div>
+
+                        <div class="field">
+                            <label>Email Address</label>
+                            <input type="email"
+                                value="{{ user['email'] }}"
+                                class="readonly" readonly>
+                        </div>
+
+                        <div class="field">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phone"
+                                value="{{ user['phone'] or '' }}"
+                                placeholder="Enter your phone number">
+                        </div>
+
+                        <div class="field">
+                            <label>Account ID</label>
+                            <input type="text"
+                                value="#{{ user['id'] }}"
+                                class="readonly" readonly>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <!-- EDUCATION -->
+                <div class="section">
+
+                    <h3 class="section-title">🎓 Education & Academic Details</h3>
+                    <p class="section-description">
+                        Tell us about your educational background and academic journey.
+                    </p>
+
+                    <div class="form-grid">
+
+                        <div class="field full">
+                            <label>College / University</label>
+                            <input type="text" name="college"
+                                value="{{ user['college'] or '' }}"
+                                placeholder="Enter your college or university name">
+                        </div>
+
+                        <div class="field">
+                            <label>Degree</label>
+                            <input type="text" name="degree"
+                                value="{{ user['degree'] or '' }}"
+                                placeholder="e.g. B.Tech, B.E, M.Tech">
+                        </div>
+
+                        <div class="field">
+                            <label>Department / Specialization</label>
+                            <input type="text" name="department"
+                                value="{{ user['department'] or '' }}"
+                                placeholder="e.g. CSE - AI & ML">
+                        </div>
+
+                        <div class="field">
+                            <label>Current Year of Study</label>
+                            <select name="study_year">
+                                <option value="">Select your year</option>
+                                {% for year in ['1st Year', '2nd Year', '3rd Year', '4th Year', 'Final Year', 'Postgraduate'] %}
+                                    <option value="{{ year }}"
+                                        {% if user['study_year'] == year %}selected{% endif %}>
+                                        {{ year }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label>Expected Graduation Year</label>
+                            <input type="number" name="graduation_year"
+                                value="{{ user['graduation_year'] or '' }}"
+                                placeholder="e.g. 2027">
+                        </div>
+
+                        <div class="field">
+                            <label>CGPA / Percentage</label>
+                            <input type="text" name="cgpa"
+                                value="{{ user['cgpa'] or '' }}"
+                                placeholder="e.g. 9.2 CGPA or 85%">
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <!-- PROFESSIONAL INFORMATION -->
+                <div class="section">
+
+                    <h3 class="section-title">💼 Professional Information</h3>
+                    <p class="section-description">
+                        Share your skills, career interests and professional links.
+                    </p>
+
+                    <div class="form-grid">
+
+                        <div class="field full">
+                            <label>Technical Skills</label>
+                            <input type="text" name="skills"
+                                value="{{ user['skills'] or '' }}"
+                                placeholder="e.g. Python, Java, SQL, Machine Learning">
+                        </div>
+
+                        <div class="field full">
+                            <label>Career Goal / Preferred Job Role</label>
+                            <input type="text" name="career_goal"
+                                value="{{ user['career_goal'] or '' }}"
+                                placeholder="e.g. AI Engineer, Software Developer">
+                        </div>
+
+                        <div class="field">
+                            <label>LinkedIn Profile</label>
+                            <input type="url" name="linkedin"
+                                value="{{ user['linkedin'] or '' }}"
+                                placeholder="https://linkedin.com/in/your-profile">
+                        </div>
+
+                        <div class="field">
+                            <label>GitHub Profile</label>
+                            <input type="url" name="github"
+                                value="{{ user['github'] or '' }}"
+                                placeholder="https://github.com/your-username">
+                        </div>
+
+                        <div class="field full">
+                            <label>About Me</label>
+                            <textarea name="bio"
+                                placeholder="Write a short introduction about yourself, your interests and achievements...">{{ user['bio'] or '' }}</textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="actions">
+
+                    <button type="submit" class="btn save-btn">
+                        Save Profile Changes
+                    </button>
+
+                    <a href="{{ url_for('dashboard') }}" class="btn back-btn">
+                        Back to Dashboard
+                    </a>
+
+                    <a href="{{ url_for('logout') }}" class="btn logout-btn">
+                        Logout
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

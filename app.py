@@ -10,14 +10,23 @@ import uuid
 import io
 import requests
 from flask import request, abort
-from flask import Flask, render_template, request, send_file
+from flask import (
+    Flask,
+    render_template,
+    request,
+    send_file,
+    redirect,
+    url_for,
+    session,
+    flash
+)
 from werkzeug.utils import secure_filename
 from io import BytesIO
 from flask import send_file
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib import colors
-
+from werkzeug.security import generate_password_hash, check_password_hash
 from evaluator import evaluate_answer
 from ai_modules.answer_evaluator import evaluate_interview
 from ai_modules.resume_intelligence import analyze_resume
@@ -43,6 +52,11 @@ from reportlab.platypus import (
 # ==================================================
 
 app = Flask(__name__)
+
+app.secret_key = os.environ.get(
+    "FLASK_SECRET_KEY",
+    "interviewgen-local-development-secret"
+)
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -105,11 +119,49 @@ def initialize_database():
                 ADD COLUMN reward_points INTEGER NOT NULL DEFAULT 0
             """)
 
+        connection.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+                # Add additional profile fields if they do not exist
+        user_columns = [
+            row["name"]
+            for row in connection.execute(
+                "PRAGMA table_info(users)"
+            ).fetchall()
+        ]
+
+        profile_fields = {
+            "phone": "TEXT",
+            "college": "TEXT",
+            "degree": "TEXT",
+            "department": "TEXT",
+            "study_year": "TEXT",
+            "graduation_year": "TEXT",
+            "cgpa": "TEXT",
+            "skills": "TEXT",
+            "career_goal": "TEXT",
+            "linkedin": "TEXT",
+            "github": "TEXT",
+            "bio": "TEXT"
+        }
+
+        for column, data_type in profile_fields.items():
+            if column not in user_columns:
+                connection.execute(
+                    f"ALTER TABLE users ADD COLUMN {column} {data_type}"
+                )
+
         connection.commit()
 
     finally:
         connection.close()
-
+        
 
 initialize_database()
 
@@ -678,7 +730,7 @@ def build_report_payload(
 
 @app.route("/")
 def home():
-    return dashboard()
+    return render_template("welcome.html")
 
 # ==================================================
 # DASHBOARD
@@ -687,13 +739,27 @@ def home():
 # ==================================================
 # DASHBOARD
 # ==================================================
+
 
 @app.route("/dashboard")
 def dashboard():
 
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
     connection = get_db_connection()
 
     try:
+        # Fetch logged-in user's details
+        user = connection.execute("""
+            SELECT id, name, email
+            FROM users
+            WHERE id = ?
+        """, (session["user_id"],)).fetchone()
+
+        if user is None:
+            session.clear()
+            return redirect(url_for("login"))
 
         total_interviews = connection.execute("""
             SELECT COUNT(*) AS total
@@ -716,16 +782,118 @@ def dashboard():
     finally:
         connection.close()
 
-    # Generate improvement plan from actual interview results
     improvement_plan = generate_improvement_plan(interviews)
 
     return render_template(
         "dashboard.html",
+        user=user,
         total_interviews=total_interviews,
         total_points=total_points,
         total_certificates=total_certificates,
         improvement_plan=improvement_plan
     )
+
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    connection = get_db_connection()
+
+    try:
+
+        if request.method == "POST":
+
+            name = request.form.get("name", "").strip()
+            phone = request.form.get("phone", "").strip()
+            college = request.form.get("college", "").strip()
+            degree = request.form.get("degree", "").strip()
+            department = request.form.get("department", "").strip()
+            study_year = request.form.get("study_year", "").strip()
+            graduation_year = request.form.get("graduation_year", "").strip()
+            cgpa = request.form.get("cgpa", "").strip()
+            skills = request.form.get("skills", "").strip()
+            career_goal = request.form.get("career_goal", "").strip()
+            linkedin = request.form.get("linkedin", "").strip()
+            github = request.form.get("github", "").strip()
+            bio = request.form.get("bio", "").strip()
+
+            if not name:
+                flash("Name cannot be empty.", "error")
+            else:
+                connection.execute("""
+                    UPDATE users
+                    SET name = ?,
+                        phone = ?,
+                        college = ?,
+                        degree = ?,
+                        department = ?,
+                        study_year = ?,
+                        graduation_year = ?,
+                        cgpa = ?,
+                        skills = ?,
+                        career_goal = ?,
+                        linkedin = ?,
+                        github = ?,
+                        bio = ?
+                    WHERE id = ?
+                """, (
+                    name, phone, college, degree, department,
+                    study_year, graduation_year, cgpa, skills,
+                    career_goal, linkedin, github, bio,
+                    session["user_id"]
+                ))
+
+                connection.commit()
+                session["user_name"] = name
+                flash("Your profile has been updated successfully!", "success")
+
+            return redirect(url_for("profile"))
+
+        user = connection.execute(
+            "SELECT * FROM users WHERE id = ?",
+            (session["user_id"],)
+        ).fetchone()
+
+    finally:
+        connection.close()
+
+    if user is None:
+        session.clear()
+        return redirect(url_for("login"))
+
+    return render_template("profile.html", user=user)
+
+
+@app.route("/settings")
+def settings():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    connection = get_db_connection()
+
+    try:
+        user = connection.execute(
+            "SELECT name, email FROM users WHERE id = ?",
+            (session["user_id"],)
+        ).fetchone()
+
+    finally:
+        connection.close()
+
+    if user is None:
+        session.clear()
+        return redirect(url_for("login"))
+
+    return render_template("settings.html", user=user)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("home"))
+
 # ==================================================
 # ANALYTICS DASHBOARD
 # ==================================================
@@ -2398,6 +2566,87 @@ def page_not_found(error):
     return "Page not found. Please check the URL.", 404
 
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+
+    if request.method == "POST":
+
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+
+        if not name or not email or not password:
+            return render_template(
+                "register.html",
+                error="Please fill in all fields."
+            )
+
+        if len(password) < 8:
+            return render_template(
+                "register.html",
+                error="Password must contain at least 8 characters."
+            )
+
+        hashed_password = generate_password_hash(password)
+
+        connection = get_db_connection()
+
+        try:
+            connection.execute(
+                """
+                INSERT INTO users (name, email, password)
+                VALUES (?, ?, ?)
+                """,
+                (name, email, hashed_password)
+            )
+
+            connection.commit()
+
+            return redirect(url_for("login"))
+
+        except sqlite3.IntegrityError:
+            return render_template(
+                "register.html",
+                error="Email already registered."
+            )
+
+        finally:
+            connection.close()
+
+    return render_template("register.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+
+        connection = get_db_connection()
+
+        try:
+            user = connection.execute(
+                "SELECT * FROM users WHERE email = ?",
+                (email,)
+            ).fetchone()
+
+            if user and check_password_hash(user["password"], password):
+
+                session["user_id"] = user["id"]
+                session["user_name"] = user["name"]
+
+                return redirect(url_for("dashboard"))
+
+            return render_template(
+                "login.html",
+                error="Invalid email or password."
+            )
+
+        finally:
+            connection.close()
+
+    return render_template("login.html")
 # ==================================================
 # RUN APPLICATION
 # ==================================================
@@ -2409,4 +2658,4 @@ if __name__ == "__main__":
         host="127.0.0.1",
         port=5000
     )
-
+    

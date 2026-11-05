@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | InterviewGen AI</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px 20px;
+
+            background:
+                linear-gradient(
+                    rgba(8, 15, 35, 0.55),
+                    rgba(8, 15, 35, 0.72)
+                ),
+                url("https://media.licdn.com/dms/image/v2/D4D12AQFmp5Sg42uNqw/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1657083234025?e=2147483647&v=beta&t=xkYJ1fQA2juD_AqLEYlvQEss5dtAL82NFmwjXbi0Up4");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .brand {
+            text-align: center;
+            color: white;
+            margin-bottom: 24px;
+        }
+
+        .brand h1 {
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .brand h1 span {
+            color: #a5a0ff;
+        }
+
+        .brand p {
+            color: #e0e5f5;
+            font-size: 14px;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .register-box {
+            background: rgba(255, 255, 255, 0.96);
+            color: #222;
+            width: 100%;
+            padding: 35px;
+            border-radius: 20px;
+
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .register-icon {
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 17px;
+            border-radius: 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: linear-gradient(135deg, #6c63ff, #5148e5);
+            color: white;
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1d2850;
+            font-size: 27px;
+            margin-bottom: 9px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .input-group {
+            margin-bottom: 17px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #303957;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #d9dce8;
+            border-radius: 9px;
+            font-size: 14px;
+            outline: none;
+            background: #f9faff;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #6c63ff;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 8px;
+
+            background: linear-gradient(135deg, #6c63ff, #5148e5);
+            color: white;
+
+            border: none;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: 600;
+
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(81, 72, 229, 0.3);
+        }
+
+        .error {
+            color: #dc2626;
+            background: #fff0f0;
+            border: 1px solid #fecaca;
+            padding: 10px;
+            border-radius: 7px;
+            text-align: center;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .login-link {
+            margin-top: 24px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        a {
+            color: #5b52ed;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-text {
+            color: #e5e7eb;
+            text-align: center;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                background-attachment: scroll;
+            }
+
+            .register-box {
+                padding: 30px 23px;
+            }
+
+            .brand h1 {
+                font-size: 25px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="register-container">
+
+        <div class="brand">
+            <h1>InterviewGen <span>AI</span></h1>
+            <p>Your Intelligent Interview Preparation Platform</p>
+        </div>
+
+        <div class="register-box">
+
+            <div class="register-icon">AI</div>
+
+            <h2>Create Account</h2>
+
+            <p class="subtitle">
+                Join InterviewGen AI and start your personalized interview preparation journey.
+            </p>
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST">
+
+                <div class="input-group">
+                    <label for="name">Full Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email address"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Minimum 8 characters"
+                        minlength="8"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit">Create My Account</button>
+
+            </form>
+
+            <div class="login-link">
+                Already have an account?
+                <a href="{{ url_for('login') }}">Login</a>
+            </div>
+
+        </div>
+
+        <p class="footer-text">
+            © 2026 InterviewGen AI | Smart Interview Preparation
+        </p>
+
+    </div>
+
+</body>
+</html>
