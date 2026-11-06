@@ -10,7 +10,7 @@ An AI-powered web application designed to help students and job seekers prepare 
 
 ---
 
-## Key Features
+## 🌟 Key Features
 
 ### 1. Interactive Mock Interview System
 
@@ -110,7 +110,7 @@ InterviewGen AI uses an LLM through the Groq API.
 
 ---
 
-##🧠 RAG + LLM Integration Architecture
+## 🧠 RAG + LLM Integration Architecture
 
 InterviewGen AI combines context retrieval and LLM generation in its supported AI workflows.
 
@@ -158,7 +158,7 @@ RAG and LLM serve different purposes: RAG provides relevant information, while t
 
 ---
 
-## 🛠️Technology Stack
+## 🛠️ Technology Stack
 
 ### Frontend
 - **HTML5** – Website structure.
@@ -262,7 +262,7 @@ InterviewGen-AI/
 
 ---
 
-##  How to Run the Project Locally
+## 🚀 How to Run the Project Locally
 
 ### Prerequisites
 
@@ -321,7 +321,7 @@ Replace `your_groq_api_key` with your actual Groq API key.
 python app.py
 ```
 
-### 🚀 Step 8: Open the Website
+### Step 8: Open the Website
 
 Visit:
 
